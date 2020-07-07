@@ -6,12 +6,11 @@ classdef ExcelHandler < handle
     
     methods
         function obj = ExcelHandler(file)
-            filename = file;
-            writematrix(["Name", "Value"],filename)
+            obj.filename = file;
         end
         
-        function appendData(obj,name,value)
-            writematrix([name, value],obj.filename,'WriteMode','append');            
+        function addData(obj,data)
+            xlswrite(obj.filename,data);           
         end
     end
 end
