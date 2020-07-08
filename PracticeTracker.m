@@ -33,7 +33,8 @@ classdef PracticeTracker < handle
                 thisProp = children(ii);
                 % if a property is a drop down or edit field grab its type and value
                 isValueProp = strcmp(thisProp.Type,'uieditfield')...
-                    ||strcmp(thisProp.Type,'uidropdown');
+                    ||strcmp(thisProp.Type,'uidropdown')...
+                    ||strcmp(thisProp.Type,'uitextarea');
                 
                 % append date and value
                 if isValueProp
