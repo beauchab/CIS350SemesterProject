@@ -1,0 +1,10 @@
+%DIR = 'TIMBR_Dat';
+%IMG_F_TYP = '.png';
+%fMajMin = 'Major';
+%shapePng = 'Open_A.png';
+%subDir = 'ChordShapes';
+%cofPng = 'A.png';
+%file path to specific chord shape
+%crdFP = fullfile('TIMBR_Dat', 'ChordShapes', 'Major', 'Open_A.png');
+%file path to specific circle of fifths
+%cofFP = fullfile('TIMBR_Dat','CircleOf5ths','A.png');
