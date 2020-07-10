@@ -26,5 +26,14 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
             testCase.verifyEqual(testCase.App.AMPMDropDown.Value,time(7:8));
         end
         
+        function testSubmitSession(testCase)
+            instr = testCase.tracker.interface.InstrumentDropDown.Value;
+            date = testCase.tracker.interface.DateEditField.Value;
+            time = testCase.tracker.interface.TimeEditField.Value;
+            filename = strcat(instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
+            
+            openPracticeReport
+            confirm it contains data
+        end
     end
 end
