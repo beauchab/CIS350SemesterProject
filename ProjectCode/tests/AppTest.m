@@ -23,14 +23,15 @@ classdef AppTest < matlab.uitest.TestCase
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            testCase.App = AppMockUp;
+            cd  'W:\CIS350SemesterProject';
+            testCase.App = timbr;
             testCase.addTeardown(@delete,testCase.App);
         end
     end
     
     methods (Test)
         function testObjCreation(testCase)
-            testCase.verifyEqual(class(testCase.App), 'AppMockUp');
+            testCase.verifyEqual(class(testCase.App), 'timbr');
         end
         
         %% Practice Tracker Testing

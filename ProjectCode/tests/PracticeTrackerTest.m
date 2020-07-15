@@ -7,7 +7,8 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            testCase.App = AppMockUp;
+            cd  'W:\CIS350SemesterProject';
+            testCase.App = timbr;
             testCase.tracker = PracticeTracker(testCase.App);
             testCase.addTeardown(@delete,testCase.App);
         end
