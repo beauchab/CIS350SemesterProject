@@ -92,9 +92,9 @@ classdef AppTest < matlab.uitest.TestCase
                 if strcmp(thisProp.Type,'uitextarea')
                     testCase.verifyEqual(thisProp.Value,{''}); 
                 elseif strcmp(thisProp.Type,'uidropdown')
-                    testCase.verifyEqual(thisProp.Value, thisProp.Items{1});
+                    testCase.verifyEqual(thisProp.Value, thisProp.Items(1));
                 elseif strcmp(thisProp.Type,'uieditfield')
-                    if ~(strcmp(thisProp.UserData, "Date")||strcmp(thisProp.UserData, "Time"))
+                    if ~strcmp(thisProp.UserData, "Date")||strcmp(thisProp.UserData,)
                         testCase.verifyEqual(thisProp.Value, {0});
                     end
                 end
