@@ -12,7 +12,7 @@ classdef ExcelHandlerTest < matlab.unittest.TestCase
     
     methods (Test)
         function testObjCreation(testCase)
-            testCase.verifyEqual(class(testCase.exl), 'ExcelHandlerTest');
+            testCase.verifyEqual(class(testCase.exl), 'ExcelHandler');
         end
     end
 end

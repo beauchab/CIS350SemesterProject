@@ -20,6 +20,33 @@ classdef PracticeTracker < handle
             obj.interface.AMPMDropDown.Value = time(7:8);
         end
         
+        function populateSongsFromDataBase(obj)
+            data = obj.interface.UITable.Data;
+            if isempty(data)
+                obj.interface.SongDropDown.Items = {'N/A'};
+                obj.interface.SongDropDown_2.Items = {'N/A'};
+                obj.interface.SongDropDown_3.Items = {'N/A'};
+            else
+                obj.interface.SongDropDown.Items = data(:,1);
+                obj.interface.SongDropDown_2.Items = data(:,1);
+                obj.interface.SongDropDown_3.Items = data(:,1);
+            end
+        end
+        
+        function populateInstrumentsFromDataBase(obj)
+            data = obj.interface.UITable2.Data;
+            if isempty(data)
+                obj.interface.InstrumentDropDown.Items = {'N/A'};
+            else
+                obj.interface.InstrumentDropDown.Items = data(:,1);
+            end
+        end
+        
+        function updateInstrumentHours(app, instrument,hours,mins)
+            curData = app.UITable2.Data{ismember(app.UITable2.Data,instrument),2};
+            app.UITable2.Data(ismember(app.UITable2.Data,instrument),2) = curData + hours + (mins/60);
+        end
+        
         function submitSession(obj)
             instr = obj.interface.InstrumentDropDown.Value;
             date = obj.interface.DateEditField.Value;
@@ -39,7 +66,7 @@ classdef PracticeTracker < handle
                 
                 % append type and value
                 if isValueProp
-                    sessionData(ii,:) = [thisProp.UserData,char(thisProp.Value)]; 
+                    sessionData(ii,:) = [thisProp.UserData,char(thisProp.Value)];
                     % UserData is set in the setUserData function in the
                     % app. User Data is used to store the name of the prop
                 else
@@ -48,9 +75,9 @@ classdef PracticeTracker < handle
             end
             
             report.addData(sessionData);
-            obj.clearPracticeTracker;                           
+            obj.clearPracticeTracker;
         end
-                
+        
         function setUserData(obj)
             % This function sets the user data for each practice app component
             obj.interface.PracticeNotesTextArea.UserData = "Practice Notes";
@@ -106,9 +133,13 @@ classdef PracticeTracker < handle
                     ||strcmp(thisProp.Type,'uitextarea');
                 
                 if isValueProp
-                    obj.setElementVal(report,thisProp); 
+                    obj.setElementVal(report,thisProp);
                 end
             end
+            
+            name = strsplit(filename, '_');
+            time = name{3};
+            obj.interface.TimeEditField.Value = [time(1:2),':',time(3:4)];
         end
         
     end
