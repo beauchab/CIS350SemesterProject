@@ -6,7 +6,7 @@ import matlab.unittest.TestRunner
 import matlab.unittest.plugins.CodeCoveragePlugin
 
 % Create test suite from the tests in 'tests' folder
-suite = TestSuite.fromFolder('ProjectCode');
+suite = TestSuite.fromFolder('tests');
 
 % Add a test runner to watch tests while they run
 runner = TestRunner.withTextOutput;

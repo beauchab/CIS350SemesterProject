@@ -23,28 +23,13 @@ classdef PracticeTracker < handle
         function populateSongsFromDataBase(obj)
             data = obj.interface.UITable.Data;
             if isempty(data)
-                obj.interface.SongDropDown.Items = {'N/A'};
-                obj.interface.SongDropDown_2.Items = {'N/A'};
-                obj.interface.SongDropDown_3.Items = {'N/A'};
-            else
-                obj.interface.SongDropDown.Items = data(:,1);
-                obj.interface.SongDropDown_2.Items = data(:,1);
-                obj.interface.SongDropDown_3.Items = data(:,1);
+            obj.interface.SongDropDown.Items = {'N/A'};
+            obj.interface.SongDropDown.Items = {'N/A'}
+            obj.interface.SongDropDown.Items = {'N/A'}
             end
-        end
-        
-        function populateInstrumentsFromDataBase(obj)
-            data = obj.interface.UITable2.Data;
-            if isempty(data)
-                obj.interface.InstrumentDropDown.Items = {'N/A'};
-            else
-                obj.interface.InstrumentDropDown.Items = data(:,1);
-            end
-        end
-        
-        function updateInstrumentHours(app, instrument,hours,mins)
-            curData = app.UITable2.Data{ismember(app.UITable2.Data,instrument),2};
-            app.UITable2.Data(ismember(app.UITable2.Data,instrument),2) = curData + hours + (mins/60);
+            obj.interface.SongDropDown.Items = data(:,1);
+            obj.interface.SongDropDown.Items = data(:,1);
+            obj.interface.SongDropDown.Items = data(:,1);
         end
         
         function submitSession(obj)
