@@ -52,36 +52,12 @@ classdef PracticeTracker < handle
             date = obj.interface.DateEditField.Value;
             time = obj.interface.TimeEditField.Value;
             
-<<<<<<< HEAD
-            report = obj.createPracticeReport(instr, date, time); % Make excel sheet
-            children = obj.interface.PracticeTrackerTab.Children; % get all properties
-            sessionData = strings(numel(children),2); % initialize session data array
-=======
             report = obj.createPracticeReport(instr, date, time); % Make report
             children = obj.interface.PracticeTrackerTab.Children; % get all properties
->>>>>>> master
             
             % Loop through properties
             for ii = numel(children):-1:1
                 thisProp = children(ii);
-<<<<<<< HEAD
-                % if a property is a drop down, edit field, or text area grab value
-                isValueProp = strcmp(thisProp.Type,'uieditfield')...
-                    ||strcmp(thisProp.Type,'uidropdown')...
-                    ||strcmp(thisProp.Type,'uitextarea');
-                
-                % append type and value
-                if isValueProp
-                    sessionData(ii,:) = [thisProp.UserData,char(thisProp.Value)];
-                    % UserData is set in the setUserData function in the
-                    % app. User Data is used to store the name of the prop
-                else
-                    sessionData(ii,:) = [];
-                end
-            end
-            
-            report.addData(sessionData);
-=======
                 
                 % append type and value based on type of property
                 if strcmp(thisProp.Type,'uieditfield')||strcmp(thisProp.Type,'uidropdown')
@@ -96,25 +72,11 @@ classdef PracticeTracker < handle
             end
             report.closeFile;
             
->>>>>>> master
             obj.clearPracticeTracker;
         end
         
         function setUserData(obj)
             % This function sets the user data for each practice app component
-<<<<<<< HEAD
-            obj.interface.PracticeNotesTextArea.UserData = "Practice Notes";
-            
-            obj.interface.SongDropDown.UserData = "Song 1";
-            obj.interface.MinutesEditField.UserData = "Song 1 Minutes";
-            obj.interface.HoursEditField.UserData = "Song 1 Hours ";
-            obj.interface.SongDropDown_2.UserData = "Song 2";
-            obj.interface.MinutesEditField_2.UserData = "Song 2 Minutes ";
-            obj.interface.HoursEditField_2.UserData = "Song 2 Hours 1";
-            obj.interface.SongDropDown_3.UserData = "Song 3";
-            obj.interface.MinutesEditField_3.UserData = "Song 3 Minutes";
-            obj.interface.HoursEditField_3.UserData = "Song 3 Hours";
-=======
             obj.interface.PracticeNotesTextArea.UserData = "PracticeNotes";
             
             obj.interface.SongDropDown.UserData = "Song1";
@@ -126,18 +88,13 @@ classdef PracticeTracker < handle
             obj.interface.SongDropDown_3.UserData = "Song3";
             obj.interface.MinutesEditField_3.UserData = "SongMins3";
             obj.interface.HoursEditField_3.UserData = "SongHrs3";
->>>>>>> master
             
             obj.interface.DateEditField.UserData = "Date";
             obj.interface.TimeEditField.UserData = "Time";
             
             obj.interface.GoalTextArea.UserData = "Goal";
             obj.interface.InstrumentDropDown.UserData = "Instrument";
-<<<<<<< HEAD
-            obj.interface.AMPMDropDown.UserData = "AM PM";
-=======
             obj.interface.AMPMDropDown.UserData = "AMPM";
->>>>>>> master
         end
         
         function clearPracticeTracker(obj)
@@ -163,10 +120,7 @@ classdef PracticeTracker < handle
         function getPracticeData(obj, filename)
             report = obj.openPracticeReport(filename);
             children = obj.interface.PracticeTrackerTab.Children; % get all properties
-<<<<<<< HEAD
-=======
             data = report.getData();
->>>>>>> master
             
             for ii = numel(children):-1:1
                 thisProp = children(ii);
@@ -177,15 +131,6 @@ classdef PracticeTracker < handle
                     ||strcmp(thisProp.Type,'uitextarea');
                 
                 if isValueProp
-<<<<<<< HEAD
-                    obj.setElementVal(report,thisProp);
-                end
-            end
-            
-            name = strsplit(filename, '_');
-            time = name{3};
-            obj.interface.TimeEditField.Value = [time(1:2),':',time(3:4)];
-=======
                     thisProp.Value = strtrim(erase(data(contains(data,thisProp.UserData)),thisProp.UserData));
                 elseif strcmp(thisProp.Type,'uinumericeditfield')
                     thisProp.Value = double(strtrim(erase(data(contains(data,thisProp.UserData)),thisProp.UserData)));
@@ -202,26 +147,12 @@ classdef PracticeTracker < handle
                 obj.interface.TimeEditField.Value = [time(1:2),':',time(3:4)];
             end
             
->>>>>>> master
         end
         
     end
     
     methods (Static)
         function exl = createPracticeReport(instrument, date, time)
-<<<<<<< HEAD
-            
-            filename = strcat(instrument, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
-            exl = ExcelHandler(filename);
-        end
-        
-        function exl = openPracticeReport(filename)
-            exl = ExcelHandler(filename);
-        end
-        
-        function setElementVal(report, element)
-            element.Value = report.getData(element.UserData);
-=======
             filename = strcat(instrument, "_", erase(date,"/"), "_", erase(time,":"), ".txt");
             exl = DataHandler(filename);
             exl.openForWriting;
@@ -230,7 +161,6 @@ classdef PracticeTracker < handle
         function exl = openPracticeReport(filename)
             exl = DataHandler(filename);
             exl.openForReading;
->>>>>>> master
         end
     end
     
