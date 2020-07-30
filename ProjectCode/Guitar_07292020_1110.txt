@@ -1,0 +1,15 @@
+PracticeNotes 
+Date 07/29/2020
+Time 11:10
+Goal 
+Instrument Guitar
+AMPM AM
+Song1 Fur elise
+Song2 Fur elise
+Song3 Old Devil Moon
+SongHrs1  3
+SongMins1 0
+SongMins2  0
+SongHrs2 0
+SongMins3 2
+SongHrs3 0

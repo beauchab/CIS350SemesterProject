@@ -1,0 +1,15 @@
+PracticeNotes sdfg
+Date 07/29/2020
+Time 11:29
+Goal sdfgsd
+Instrument Piano
+AMPM PM
+Song1 Fur elise
+Song2 Old Devil Moon
+Song3 Shallow
+SongHrs1  1
+SongMins1 2
+SongMins2  2
+SongHrs2 1
+SongMins3 20
+SongHrs3 3

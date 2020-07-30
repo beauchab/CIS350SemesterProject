@@ -8,7 +8,7 @@ classdef GenerateReportTest < matlab.uitest.TestCase
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            cd  'W:\CIS350SemesterProject';
+            cd  'W:\CIS350SemesterProject\ProjectCode';
             testCase.App = GenerateReport(testCase.songs, testCase.instrs);
             testCase.addTeardown(@delete,testCase.App);
         end
