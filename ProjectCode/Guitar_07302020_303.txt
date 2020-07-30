@@ -1,0 +1,15 @@
+PracticeNotes 
+Date 07/30/2020
+Time 3:03
+Goal 
+Instrument Guitar
+AMPM PM
+Song1 Old Devil Moon
+Song2 Fur elise
+Song3 Shallow
+SongHrs1  1
+SongMins1 0
+SongMins2  30
+SongHrs2 0
+SongMins3 0
+SongHrs3 2
