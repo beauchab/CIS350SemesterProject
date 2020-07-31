@@ -246,7 +246,7 @@ classdef GuitarChordRealizer < handle
             obj.xLoc = imgXLoc;             
            
             %Compile File Path
-            crdFP = fullfile(pwd, 'ProjectCode','TIMBR_DAT','ChordShapes',...
+            crdFP = fullfile(pwd, 'Project Code' ,'TIMBR_DAT','ChordShapes',...
                 obj.tonality, obj.shapePNG);    
            
             %Create a figure to display a guitar chord
@@ -261,7 +261,7 @@ classdef GuitarChordRealizer < handle
             set(f,'name', figName);
            	
     	   %Display the guitar neck and resize image
-    	   neck = imread(fullfile(pwd,'ProjectCode','TIMBR_DAT','guitarNeck2.png'));
+    	   neck = imread(fullfile(pwd, 'Project Code' ,'TIMBR_DAT','guitarNeck2.png'));
             %neck = imresize(neck, 0.90);
             [y,x,~] = size(neck);
             
@@ -280,6 +280,8 @@ classdef GuitarChordRealizer < handle
             I4 = imshow(im, 'Parent', ax);
             set(I4, 'AlphaData', alpha, 'XData', [-10 -10+x1]);
             set(f,'Position',[100 100 x y]);
+            
+            obj.fig = f;
         end
         %{
         Name: imgPlaceMath

@@ -18,12 +18,14 @@ classdef AppTest < matlab.uitest.TestCase
             "Ab",	"Bbm",	"Cm",	"Db",	"Eb",	"Fm",	"G*"
             ];
         
-        shapeVec = ["C", "A", "G", "E", "D"];
+        shapeMajMinVec = ["C", "A", "G", "E", "D"];
+        shapesDiminVec = ["6", "5", "4"];
     end
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            cd  'W:\CIS350SemesterProject';
+            %cd  'W:\CIS350SemesterProject\ProjectCode';
+            cd '..';
             testCase.App = timbr;
             testCase.addTeardown(@delete,testCase.App);
         end
@@ -143,7 +145,7 @@ classdef AppTest < matlab.uitest.TestCase
                 end
                 %Test Verifications:
                 keyToVer = strcat(key, '.png');
-                testCase.verifyEqual(keyToVer, convertCharsToStrings(testCase.App.GuitarChordRealizer.co5PNG));
+                testCase.verifyEqual(keyToVer, convertCharsToStrings(testCase.App.gcRealizer.co5PNG));
             end
         end
         
@@ -163,26 +165,44 @@ classdef AppTest < matlab.uitest.TestCase
                 %Loop through all chords
                 for i = 1:7
                     %Select Chord
-                    testCase.choose(testCase.App.GuitarChords_ChordDD,chordsInKey(i));
+                    chord = chordsInKey(i);
+                    testCase.choose(testCase.App.GuitarChords_ChordDD,chord);
+                    root = chord(1:1);
+                    type = 'Bar_';
                     %Loop through all caged shapes
                     
                     if(i == 1 || i == 4 || i == 5)
                         subFolder = 'Major';
+                        last = 5;                        
                     elseif(i == 7)
                         subFolder = 'Diminished';
+                        last = 3;
                     else
                         subFolder = 'Minor';
+                        last = 5;
                     end
                     
-                    for j = 1:5
+                    for j = 1:last
                         %Select Caged Shape
-                        cagedShape = testCase.shapeVec(j);
+                        %Concat File Name
+                        if(strcmp(subFolder, 'Diminished'))                            
+                            cagedShape = testCase.shapesDiminVec(j);
+                            type = '';                    
+                        else
+                            cagedShape = testCase.shapeMajMinVec(j);
+                            if(strcmp(cagedShape, root))
+                                type = 'Open_';                    
+                            end
+                        end
                         testCase.choose(testCase.App.GuitarChords_CAGEDLB,cagedShape);
-                        shapeToVer = strcat(cagedShape, '.png');
+                        shapeToVer = strcat(type, cagedShape, '.png');
                         
+                        testCase.press(testCase.App.GuitarChords_DisplayChordBtn);
+                                                
                         %Test Verifications:
-                        testCase.verifyEqual(convertCharsToStrings(testCase.App.GuitarChordRealizer.shapePNG),shapeToVer);
-                        testCase.verifyEqual(convertCharsToStrings(testCase.App.GuitarChordRealizer.tonality),convertCharsToStrings(subFolder));
+                        testCase.verifyEqual(convertCharsToStrings(testCase.App.gcRealizer.shapePNG),shapeToVer);
+                        testCase.verifyEqual(convertCharsToStrings(testCase.App.gcRealizer.tonality),convertCharsToStrings(subFolder));
+                        close all;
                         %   XLocations
                     end
                 end
