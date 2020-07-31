@@ -8,8 +8,11 @@ classdef PracticeTracker < handle
         function obj = PracticeTracker(intface)
             obj.interface = intface;
             
-            % populate date and time fields
+            % Setup app
             obj.setDateTime;
+            obj.setUserData;
+            obj.populateSongsFromDataBase
+            obj.populateInstrumentsFromDataBase;
         end
         
         function setDateTime(obj)
