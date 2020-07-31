@@ -19,13 +19,14 @@ classdef AppTest < matlab.uitest.TestCase
             ];
         
         shapeMajMinVec = ["C", "A", "G", "E", "D"];
-        shapesDiminVec = ["6", "5", "4"];
+        shapeDiminVec = ["6", "5", "4"];
     end
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            %cd  'W:\CIS350SemesterProject\ProjectCode';
+            %cd  'W:\CIS350SemesterProject';
             cd '..';
+            disp(pwd);
             testCase.App = timbr;
             testCase.addTeardown(@delete,testCase.App);
         end
@@ -36,92 +37,9 @@ classdef AppTest < matlab.uitest.TestCase
             testCase.verifyEqual(class(testCase.App), 'timbr');
         end
         
-        %% Practice Tracker Testing
-        function testSubmitSession(testCase)
-            % set data
-            testCase.type(testCase.App.PracticeNotesTextArea, "This is a test note");
-            testCase.type(testCase.App.GoalTextArea, "This is a test goal");
-            
-            testCase.choose(testCase.App.SongDropDown, 1);
-            testCase.type(testCase.App.MinutesEditField, 15);
-            testCase.type(testCase.App.HoursEditField, 1);
-            
-            testCase.choose(testCase.App.SongDropDown_2, 1);
-            testCase.type(testCase.App.MinutesEditField_2, 30);
-            testCase.type(testCase.App.HoursEditField_2, 2);
-            
-            testCase.choose(testCase.App.SongDropDown_3, 1);
-            testCase.type(testCase.App.MinutesEditField_3, 45);
-            testCase.type(testCase.App.HoursEditField_3, 0);
-            
-            testCase.App.practiceLog.setDateTime;
-            
-            testCase.choose(testCase.App.InstrumentDropDown, 1);
-            testCase.choose(testCase.App.AMPMDropDown, 1);
-            
-            % press button
-            testCase.press(testCase.App.SubmitSessionButton);
-            
-            % verify file was created
-            instr = testCase.App.InstrumentDropDown.Value;
-            date = testCase.App.DateEditField.Value;
-            time = testCase.App.TimeEditField.Value;
-            curfolder = pwd;
-            file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
-            testCase.verifyEqual(isfile(file),true);
-            
-            % verify data
-        end
-        
-        function testRecallSession(testCase)
-            % function to be implemented in later sprint
-            %testCase.press(testCase.App.RecallSessionButton);
-        end
-        
-        function testClearSession(testCase)
-            % set data
-            testCase.type(testCase.App.PracticeNotesTextArea, "This is a test note");
-            testCase.type(testCase.App.GoalTextArea, "This is a test goal");
-            
-            testCase.choose(testCase.App.SongDropDown, 1);
-            testCase.type(testCase.App.MinutesEditField, 15);
-            testCase.type(testCase.App.HoursEditField, 1);
-            
-            testCase.choose(testCase.App.SongDropDown_2, 1);
-            testCase.type(testCase.App.MinutesEditField_2, 30);
-            testCase.type(testCase.App.HoursEditField, 2);
-            
-            testCase.choose(testCase.App.SongDropDown, 1);
-            testCase.type(testCase.App.MinutesEditField_3, 45);
-            testCase.type(testCase.App.HoursEditField_3, 0);
-            
-            testCase.App.practiceLog.setDateTime;
-            
-            testCase.choose(testCase.App.InstrumentDropDown, 1);
-            testCase.choose(testCase.App.AMPMDropDown, 1);
-            
-            % press button
-            testCase.press(testCase.App.ClearInputsButton);
-            
-            % verify data
-            children = testCase.App.PracticeTrackerTab.Children; % get all properties
-            
-            for ii = numel(children):-1:1
-                thisProp = children(ii);
-                
-                if strcmp(thisProp.Type,'uitextarea')
-                    testCase.verifyEqual(thisProp.Value,{''});
-                elseif strcmp(thisProp.Type,'uidropdown')
-                    testCase.verifyEqual(thisProp.Value, thisProp.Items{1});
-                elseif strcmp(thisProp.Type,'uieditfield')
-                    if ~(strcmp(thisProp.UserData, "Date")||strcmp(thisProp.UserData, "Time"))
-                        testCase.verifyEqual(thisProp.Value, {0});
-                    end
-                end
-            end
-        end
-        
         %% Guitar Chord Tests
+        %THIS TEST SHOULD WORK
+        
         function testGuitarChords1(testCase)
             %testCase.verifyEqual(class(testCase.App), 'AppMockUp');
             for x = 1:12
@@ -134,7 +52,7 @@ classdef AppTest < matlab.uitest.TestCase
                 end
                 
                 %Select Key
-                testCase.choose(testCase.App.GuitarChords_KeyDD,key);
+                testCase.choose(testCase.App.GuitarChords_KeyDD,convertStringsToChars(key));
                 
                 chordsToTest = testCase.App.GuitarChords_ChordDD.Items;
                 
@@ -167,7 +85,8 @@ classdef AppTest < matlab.uitest.TestCase
                     %Select Chord
                     chord = chordsInKey(i);
                     testCase.choose(testCase.App.GuitarChords_ChordDD,chord);
-                    root = chord(1:1);
+                    root =  extractAfter(chord,' : ');
+                    root = root(1:1);
                     type = 'Bar_';
                     %Loop through all caged shapes
                     
@@ -175,7 +94,7 @@ classdef AppTest < matlab.uitest.TestCase
                         subFolder = 'Major';
                         last = 5;                        
                     elseif(i == 7)
-                        subFolder = 'Diminished';
+                        subFolder = 'Dimin';
                         last = 3;
                     else
                         subFolder = 'Minor';
@@ -185,7 +104,7 @@ classdef AppTest < matlab.uitest.TestCase
                     for j = 1:last
                         %Select Caged Shape
                         %Concat File Name
-                        if(strcmp(subFolder, 'Diminished'))                            
+                        if(strcmp(subFolder, 'Dimin'))                            
                             cagedShape = testCase.shapesDiminVec(j);
                             type = '';                    
                         else
@@ -194,20 +113,26 @@ classdef AppTest < matlab.uitest.TestCase
                                 type = 'Open_';                    
                             end
                         end
-                        testCase.choose(testCase.App.GuitarChords_CAGEDLB,cagedShape);
+                        testCase.choose(testCase.App.GuitarChords_CAGEDLB,...
+                            convertStringsToChars(cagedShape));
                         shapeToVer = strcat(type, cagedShape, '.png');
                         
                         testCase.press(testCase.App.GuitarChords_DisplayChordBtn);
+                        testCase.App.gcRealizer.dispGuitarChord;
                                                 
                         %Test Verifications:
-                        testCase.verifyEqual(convertCharsToStrings(testCase.App.gcRealizer.shapePNG),shapeToVer);
-                        testCase.verifyEqual(convertCharsToStrings(testCase.App.gcRealizer.tonality),convertCharsToStrings(subFolder));
+                        testCase.verifyEqual(testCase.App.gcRealizer.shapePNG,...
+                            convertStringsToChars(shapeToVer));
+                        testCase.verifyEqual(convertCharsToStrings...
+                            (testCase.App.gcRealizer.tonality),...
+                            convertCharsToStrings(subFolder));
                         close all;
                         %   XLocations
                     end
                 end
             end
         end
+        
         %% Song Database Tests
         function TestAddSong(testCase)
             testCase.App.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
