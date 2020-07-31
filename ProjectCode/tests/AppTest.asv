@@ -18,12 +18,13 @@ classdef AppTest < matlab.uitest.TestCase
             "Ab",	"Bbm",	"Cm",	"Db",	"Eb",	"Fm",	"G*"
             ];
         
-        shapeVec = ["C", "A", "G", "E", "D"];
+        shapeMajMinVec = ["C", "A", "G", "E", "D"];
+        shapeDiminVec = ["6", "5", "4"];
     end
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            cd  'W:\CIS350SemesterProject';
+            %cd  'W:\CIS350SemesterProject';
             testCase.App = timbr;
             testCase.addTeardown(@delete,testCase.App);
         end
@@ -32,91 +33,6 @@ classdef AppTest < matlab.uitest.TestCase
     methods (Test)
         function testObjCreation(testCase)
             testCase.verifyEqual(class(testCase.App), 'timbr');
-        end
-        
-        %% Practice Tracker Testing
-        function testSubmitSession(testCase)
-            % set data
-            testCase.type(testCase.App.PracticeNotesTextArea, "This is a test note");
-            testCase.type(testCase.App.GoalTextArea, "This is a test goal");
-            
-            testCase.choose(testCase.App.SongDropDown, 1);
-            testCase.type(testCase.App.MinutesEditField, 15);
-            testCase.type(testCase.App.HoursEditField, 1);
-            
-            testCase.choose(testCase.App.SongDropDown_2, 1);
-            testCase.type(testCase.App.MinutesEditField_2, 30);
-            testCase.type(testCase.App.HoursEditField_2, 2);
-            
-            testCase.choose(testCase.App.SongDropDown_3, 1);
-            testCase.type(testCase.App.MinutesEditField_3, 45);
-            testCase.type(testCase.App.HoursEditField_3, 0);
-            
-            testCase.App.practiceLog.setDateTime;
-            
-            testCase.choose(testCase.App.InstrumentDropDown, 1);
-            testCase.choose(testCase.App.AMPMDropDown, 1);
-            
-            % press button
-            testCase.press(testCase.App.SubmitSessionButton);
-            
-            % verify file was created
-            instr = testCase.App.InstrumentDropDown.Value;
-            date = testCase.App.DateEditField.Value;
-            time = testCase.App.TimeEditField.Value;
-            curfolder = pwd;
-            file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
-            testCase.verifyEqual(isfile(file),true);
-            
-            % verify data
-        end
-        
-        function testRecallSession(testCase)
-            % function to be implemented in later sprint
-            %testCase.press(testCase.App.RecallSessionButton);
-        end
-        
-        function testClearSession(testCase)
-            % set data
-            testCase.type(testCase.App.PracticeNotesTextArea, "This is a test note");
-            testCase.type(testCase.App.GoalTextArea, "This is a test goal");
-            
-            testCase.choose(testCase.App.SongDropDown, 1);
-            testCase.type(testCase.App.MinutesEditField, 15);
-            testCase.type(testCase.App.HoursEditField, 1);
-            
-            testCase.choose(testCase.App.SongDropDown_2, 1);
-            testCase.type(testCase.App.MinutesEditField_2, 30);
-            testCase.type(testCase.App.HoursEditField, 2);
-            
-            testCase.choose(testCase.App.SongDropDown, 1);
-            testCase.type(testCase.App.MinutesEditField_3, 45);
-            testCase.type(testCase.App.HoursEditField_3, 0);
-            
-            testCase.App.practiceLog.setDateTime;
-            
-            testCase.choose(testCase.App.InstrumentDropDown, 1);
-            testCase.choose(testCase.App.AMPMDropDown, 1);
-            
-            % press button
-            testCase.press(testCase.App.ClearInputsButton);
-            
-            % verify data
-            children = testCase.App.PracticeTrackerTab.Children; % get all properties
-            
-            for ii = numel(children):-1:1
-                thisProp = children(ii);
-                
-                if strcmp(thisProp.Type,'uitextarea')
-                    testCase.verifyEqual(thisProp.Value,{''});
-                elseif strcmp(thisProp.Type,'uidropdown')
-                    testCase.verifyEqual(thisProp.Value, thisProp.Items{1});
-                elseif strcmp(thisProp.Type,'uieditfield')
-                    if ~(strcmp(thisProp.UserData, "Date")||strcmp(thisProp.UserData, "Time"))
-                        testCase.verifyEqual(thisProp.Value, {0});
-                    end
-                end
-            end
         end
         
         %% Guitar Chord Tests
@@ -166,7 +82,7 @@ classdef AppTest < matlab.uitest.TestCase
                 for i = 1:7
                     %Select Chord
                     chord = chordsInKey(i);
-                    testCase.choose(testCase.App.GuitarChords_ChordDD,chord);
+                    %testCase.choose(testCase.App.GuitarChords_ChordDD,chord);
                     root = chord(1:1);
                     type = 'Bar_';
                     %Loop through all caged shapes
@@ -208,55 +124,113 @@ classdef AppTest < matlab.uitest.TestCase
                 end
             end
         end
+        
         %% Song Database Tests
         function TestAddSong(testCase)
-            testCase.App.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Lady Gaga');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
+            delete (testCase.App.songDatabase.databaseFile);
+            testCase.App.songDatabase.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
             
-            testCase.App.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Lady Gaga');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'We Will Rock You');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Queen');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
+            testCase.App.songDatabase.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
             
-            testCase.App.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Lady Gaga');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,1},'We Will Rock You');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,2},'Queen');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,3},'URL');
+            testCase.App.songDatabase.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,3}),'URL');
         end
         
         function TestDeleteSong(testCase)
-            testCase.App.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
-            testCase.App.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
-            testCase.App.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Lady Gaga');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,1},'We Will Rock You');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,2},'Queen');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,3},'URL');
+            delete (testCase.App.songDatabase.databaseFile);
+            testCase.App.songDatabase.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
+            testCase.App.songDatabase.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.App.songDatabase.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,3}),'URL');
             
-            testCase.App.deleteSongInDatabase('Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'We Will Rock You');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Queen');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
+            testCase.App.songDatabase.deleteSongInDatabase('Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+        end
+
+        
+         %% Instruments Database Tests
+        function TestAddSong(testCase)
+            delete (testCase.App.instrsDatabase.databaseFile);
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            
+            testCase.App.instrsDatabase.addToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            
+            testCase.App.instrsDatabase.addToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,3}),'URL');
         end
         
+        function TestDeleteinstrs(testCase)
+            delete (testCase.App.instrsDatabase.databaseFile);
+            testCase.App.instrsDatabase.addToDatabase('Shallow', 'Lady Gaga', 'URL');
+            testCase.App.instrsDatabase.addToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.App.instrsDatabase.addToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,3}),'URL');
+            
+            testCase.App.instrsDatabase.deleteFromDatabase('Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+        end
     end
 end

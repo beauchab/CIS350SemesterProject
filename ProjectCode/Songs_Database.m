@@ -8,6 +8,7 @@ classdef Songs_Database < handle
     methods
         function obj = Songs_Database(intface)
             obj.interface = intface;
+            obj.updateTable;
         end
         
         function updateTable(obj)

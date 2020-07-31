@@ -10,11 +10,14 @@ classdef Instruments_Database < handle
         function obj = Instruments_Database(intface, dbTable)
             obj.interface = intface;
             obj.databaseTable = dbTable;
+            obj.updateTable;
         end
         
         function updateTable(obj)
-            data = obj.getAllData;
-            obj.databaseTable = data;
+            if isfile(obj.databaseFile)
+                data = obj.getAllData;
+                obj.databaseTable.Data = data;
+            end
         end
         
         function addToDatabase(obj, varargin)
@@ -38,7 +41,7 @@ classdef Instruments_Database < handle
             switch answer % Handle response
                 case 'Yes'
                     alldata = string(obj.getAllData());
-                    rowdata = string(obj.getSongRows(name));
+                    rowdata = string(obj.getRows(name));
                     
                     alldata(ismember(alldata,rowdata, 'rows'),:) = [];
                     
@@ -48,10 +51,7 @@ classdef Instruments_Database < handle
                     for ii=1:numel(alldata(:,1))
                         obj.addToDatabase(alldata{ii,1},alldata{ii,2});
                     end
-                    
-                    obj.updateTable;
-                    obj.sortDatabase; % Resort the entries
-                    
+                                        
                     file.closeFile;
                 case 'No'
                     disp([answer 'Song not deleted'])
@@ -60,8 +60,10 @@ classdef Instruments_Database < handle
     
         function sortDatabase(obj)
             data = obj.databaseTable.Data;    % Get current data from table
-            sortedData = sortrows(data, 1); % Sort the data by the first column
-            obj.databaseTable.Data = sortedData; % Add the data back to the table
+            if ~isempty(data)
+                sortedData = sortrows(data, 1); % Sort the data by the first column
+                obj.databaseTable.Data = sortedData; % Add the data back to the table
+            end
         end
     
         function searchDatabase(obj, name)
@@ -85,7 +87,7 @@ classdef Instruments_Database < handle
         end
         
         function rows = getRows(obj, name)
-            tableData = obj.interface.UITable.Data; % Get current data from table
+            tableData = obj.databaseTable.Data; % Get current data from table
             logArr = contains(tableData, name);
             rows = tableData(logArr(:,1),:);
         end

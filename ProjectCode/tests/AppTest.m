@@ -24,7 +24,7 @@ classdef AppTest < matlab.uitest.TestCase
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            cd  'W:\CIS350SemesterProject';
+            %cd  'W:\CIS350SemesterProject';
             testCase.App = timbr;
             testCase.addTeardown(@delete,testCase.App);
         end
@@ -82,7 +82,7 @@ classdef AppTest < matlab.uitest.TestCase
                 for i = 1:7
                     %Select Chord
                     chord = chordsInKey(i);
-                    testCase.choose(testCase.App.GuitarChords_ChordDD,chord);
+                    %testCase.choose(testCase.App.GuitarChords_ChordDD,chord);
                     root = chord(1:1);
                     type = 'Bar_';
                     %Loop through all caged shapes
@@ -127,53 +127,110 @@ classdef AppTest < matlab.uitest.TestCase
         
         %% Song Database Tests
         function TestAddSong(testCase)
-            testCase.App.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Lady Gaga');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
+            delete (testCase.App.songDatabase.databaseFile);
+            testCase.App.songDatabase.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
             
-            testCase.App.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Lady Gaga');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'We Will Rock You');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Queen');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
+            testCase.App.songDatabase.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
             
-            testCase.App.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Lady Gaga');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,1},'We Will Rock You');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,2},'Queen');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,3},'URL');
+            testCase.App.songDatabase.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,3}),'URL');
         end
         
         function TestDeleteSong(testCase)
-            testCase.App.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
-            testCase.App.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
-            testCase.App.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Lady Gaga');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,1},'We Will Rock You');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,2},'Queen');
-            testCase.verifyEqual(testCase.App.UITable.Data{3,3},'URL');
+            delete (testCase.App.songDatabase.databaseFile);
+            testCase.App.songDatabase.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
+            testCase.App.songDatabase.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.App.songDatabase.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,3}),'URL');
             
-            testCase.App.deleteSongInDatabase('Shallow');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
-            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'We Will Rock You');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Queen');
-            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
+            testCase.App.songDatabase.deleteSongInDatabase('Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+        end
+
+        
+         %% Instruments Database Tests
+        function TestAddInstrument(testCase)
+            delete (testCase.App.instrsDatabase.databaseFile);
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            
+            testCase.App.instrsDatabase.addToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            
+            testCase.App.instrsDatabase.addToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,3}),'URL');
         end
         
+        function TestDeleteinstrs(testCase)
+            delete (testCase.App.instrsDatabase.databaseFile);
+            testCase.App.instrsDatabase.addToDatabase('Shallow', 'Lady Gaga', 'URL');
+            testCase.App.instrsDatabase.addToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.App.instrsDatabase.addToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{3,3}),'URL');
+            
+            testCase.App.instrsDatabase.deleteFromDatabase('Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Baby');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Justin Bieber');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'URL');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,1}),'We Will Rock You');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,2}),'Queen');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{2,3}),'URL');
+        end
     end
 end
