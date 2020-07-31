@@ -1,0 +1,15 @@
+PracticeNotes This is a test note
+Date 07/30/2020
+Time 4:44
+Goal This is a test goal
+Instrument Guitar
+AMPM AM
+Song1 Fur elise
+Song2 Fur elise
+Song3 Fur elise
+SongHrs1  1
+SongMins1 15
+SongMins2  30
+SongHrs2 2
+SongMins3 45
+SongHrs3 0

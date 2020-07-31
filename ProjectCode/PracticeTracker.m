@@ -2,7 +2,6 @@ classdef PracticeTracker < handle
     
     properties
         interface
-        files
     end
     
     methods
@@ -161,7 +160,9 @@ classdef PracticeTracker < handle
         function exl = openPracticeReport(filename)
             exl = DataHandler(filename);
             exl.openForReading;
-        end
+            
+            end
     end
+    
     
 end

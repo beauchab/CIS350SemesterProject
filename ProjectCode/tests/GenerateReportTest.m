@@ -19,6 +19,21 @@ classdef GenerateReportTest < matlab.uitest.TestCase
             testCase.verifyEqual(class(testCase.App), 'GenerateReport');
         end
         
+        function testBuildFromBottom(testCase)
+            xtrasongs = [{'Shallow'}, {'Never'}, {'Gonna'}, {'Give'}, {'you'}, {'up'}, {'a'}, {'b'}, {'c'}, {'d'}, {'e'}];
+            testCase.App = GenerateReport(xtrasongs, testCase.instrs);
+            
+            
+            testCase.verifyEqual(numel(xtrasongs),numel(testCase.App.SongsPanel.Children));
+            for ii=numel(xtrasongs):-1:1
+                kidArr(ii) = {testCase.App.SongsPanel.Children(ii).Text};
+            end
+            intsct = intersect(kidArr, xtrasongs);
+            
+            testCase.verifyEqual(numel(intsct), numel(xtrasongs));
+            testCase.verifyEqual(numel(intsct), numel(testCase.App.SongsPanel.Children));
+        end
+        
         function testSongPanelPopulation(testCase)
             % verify song panel has the right songs
             testCase.verifyEqual(numel(testCase.songs),numel(testCase.App.SongsPanel.Children));
@@ -73,8 +88,17 @@ classdef GenerateReportTest < matlab.uitest.TestCase
             end
         end
         
+        function testNoFileSelected(testCase)
+            testCase.App.ReportFolderEditField.Value = '';
+            testCase.press(testCase.App.CreateReportButton);
+            %matlab.uitest.unlock(testCase.App.UIFigure);
+            %testCase.verifyEqual(testCase.App.confirmHandle, 'uiconfirm');
+        end
+        
         function testBrowse(testCase)
-            uiconfirm(testCase.App.UIFigure, "Select W:\CIS350SemesterProject", "prompt");
+            waitfor(questdlg("Select W:\CIS350SemesterProject", ...
+                "prompt", ...
+                'Ok','Ok'));
             testCase.press(testCase.App.BrowseButton);
             testCase.verifyEqual(testCase.App.ReportFolderEditField.Value,'W:\CIS350SemesterProject');
         end
