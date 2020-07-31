@@ -1,0 +1,242 @@
+classdef AppTest < matlab.uitest.TestCase
+    % Practice Tracker Unit Tests
+    properties
+        App
+        co5Arr = [
+            "I",	"ii",	"iii",	"IV",	"V",	"vi",	"vii";
+            "A",	"Bm",	"Dbm",	"D",	"E",	"Gbm",	"Ab*";
+            "Bb",	"Cm",	"Dm",	"Eb",	"F",	"Gm",	"A*";
+            "B",	"Dbm",	"Ebm",	"E",	"Gb",	"Abm",	"Bb*";
+            "C",	"Dm",	"Em",	"F",	"G",	"Am",	"B*";
+            "Db",	"Ebm",	"Fm",	"Gb",	"Ab",	"Bbm",	"C*";
+            "D",	"Em",	"Gbm",	"G",	"A",	"Bm",	"Db*";
+            "Eb",	"Fm",	"Gm",	"Ab",	"Bb",	"Cm",	"D*";
+            "E",	"Gbm",	"Abm",	"A",	"B",	"Dbm",	"Eb*";
+            "F",	"Gm",	"Am",	"Bb",	"C",	"Dm",	"E*";
+            "Gb",	"Abm",	"Bbm",	"B",	"Db",	"Ebm",	"F*";
+            "G",	"Am",	"Bm",	"C",	"D",	"Em",	"Gb*";
+            "Ab",	"Bbm",	"Cm",	"Db",	"Eb",	"Fm",	"G*"
+            ];
+        
+        shapeVec = ["C", "A", "G", "E", "D"];
+    end
+    
+    methods (TestMethodSetup)
+        function launchApp(testCase)
+            cd  'W:\CIS350SemesterProject';
+            testCase.App = timbr;
+            testCase.addTeardown(@delete,testCase.App);
+        end
+    end
+    
+    methods (Test)
+        function testObjCreation(testCase)
+            testCase.verifyEqual(class(testCase.App), 'timbr');
+        end
+        
+        %% Practice Tracker Testing
+        function testSubmitSession(testCase)
+            % set data
+            testCase.type(testCase.App.PracticeNotesTextArea, "This is a test note");
+            testCase.type(testCase.App.GoalTextArea, "This is a test goal");
+            
+            testCase.choose(testCase.App.SongDropDown, 1);
+            testCase.type(testCase.App.MinutesEditField, 15);
+            testCase.type(testCase.App.HoursEditField, 1);
+            
+            testCase.choose(testCase.App.SongDropDown_2, 1);
+            testCase.type(testCase.App.MinutesEditField_2, 30);
+            testCase.type(testCase.App.HoursEditField_2, 2);
+            
+            testCase.choose(testCase.App.SongDropDown_3, 1);
+            testCase.type(testCase.App.MinutesEditField_3, 45);
+            testCase.type(testCase.App.HoursEditField_3, 0);
+            
+            testCase.App.practiceLog.setDateTime;
+            
+            testCase.choose(testCase.App.InstrumentDropDown, 1);
+            testCase.choose(testCase.App.AMPMDropDown, 1);
+            
+            % press button
+            testCase.press(testCase.App.SubmitSessionButton);
+            
+            % verify file was created
+            instr = testCase.App.InstrumentDropDown.Value;
+            date = testCase.App.DateEditField.Value;
+            time = testCase.App.TimeEditField.Value;
+            curfolder = pwd;
+            file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
+            testCase.verifyEqual(isfile(file),true);
+            
+            % verify data
+        end
+        
+        function testRecallSession(testCase)
+            % function to be implemented in later sprint
+            %testCase.press(testCase.App.RecallSessionButton);
+        end
+        
+        function testClearSession(testCase)
+            % set data
+            testCase.type(testCase.App.PracticeNotesTextArea, "This is a test note");
+            testCase.type(testCase.App.GoalTextArea, "This is a test goal");
+            
+            testCase.choose(testCase.App.SongDropDown, 1);
+            testCase.type(testCase.App.MinutesEditField, 15);
+            testCase.type(testCase.App.HoursEditField, 1);
+            
+            testCase.choose(testCase.App.SongDropDown_2, 1);
+            testCase.type(testCase.App.MinutesEditField_2, 30);
+            testCase.type(testCase.App.HoursEditField, 2);
+            
+            testCase.choose(testCase.App.SongDropDown, 1);
+            testCase.type(testCase.App.MinutesEditField_3, 45);
+            testCase.type(testCase.App.HoursEditField_3, 0);
+            
+            testCase.App.practiceLog.setDateTime;
+            
+            testCase.choose(testCase.App.InstrumentDropDown, 1);
+            testCase.choose(testCase.App.AMPMDropDown, 1);
+            
+            % press button
+            testCase.press(testCase.App.ClearInputsButton);
+            
+            % verify data
+            children = testCase.App.PracticeTrackerTab.Children; % get all properties
+            
+            for ii = numel(children):-1:1
+                thisProp = children(ii);
+                
+                if strcmp(thisProp.Type,'uitextarea')
+                    testCase.verifyEqual(thisProp.Value,{''});
+                elseif strcmp(thisProp.Type,'uidropdown')
+                    testCase.verifyEqual(thisProp.Value, thisProp.Items{1});
+                elseif strcmp(thisProp.Type,'uieditfield')
+                    if ~(strcmp(thisProp.UserData, "Date")||strcmp(thisProp.UserData, "Time"))
+                        testCase.verifyEqual(thisProp.Value, {0});
+                    end
+                end
+            end
+        end
+        
+        %% Guitar Chord Tests
+        function testGuitarChords1(testCase)
+            %testCase.verifyEqual(class(testCase.App), 'AppMockUp');
+            for x = 1:12
+                %Generate Key and Chords in Key for Test Case
+                key = testCase.co5Arr(x+1,1);
+                
+                chords = testCase.co5Arr(x+1,:);
+                for ii=numel(chords):-1:1
+                    chordsInKey(ii) = strcat(testCase.co5Arr(1,ii), " : ", chords(ii));
+                end
+                
+                %Select Key
+                testCase.choose(testCase.App.GuitarChords_KeyDD,key);
+                
+                chordsToTest = testCase.App.GuitarChords_ChordDD.Items;
+                
+                for i = 1:7
+                    %Test Verifications -> Chords have been properly
+                    %concatenated to chord num
+                    testCase.verifyEqual(convertCharsToStrings(chordsToTest{i}), chordsInKey(i));
+                end
+                %Test Verifications:
+                keyToVer = strcat(key, '.png');
+                testCase.verifyEqual(keyToVer, convertCharsToStrings(testCase.App.GuitarChordRealizer.co5PNG));
+            end
+        end
+        
+        function testGuitarChords2(testCase)
+            %Loop through all Keys
+            for x = 1:12
+                %Generate Key and Chords in Key for Test Case
+                key = testCase.co5Arr(x+1,1);
+                
+                chords = testCase.co5Arr(x+1,:);
+                for ii=numel(chords):-1:1
+                    chordsInKey(ii) = strcat(testCase.co5Arr(1,ii), " : ", chords(ii));
+                end
+                
+                %Select Key
+                testCase.choose(testCase.App.GuitarChords_KeyDD,key);
+                %Loop through all chords
+                for i = 1:7
+                    %Select Chord
+                    testCase.choose(testCase.App.GuitarChords_ChordDD,chordsInKey(i));
+                    %Loop through all caged shapes
+                    
+                    if(i == 1 || i == 4 || i == 5)
+                        subFolder = 'Major';
+                    elseif(i == 7)
+                        subFolder = 'Diminished';
+                    else
+                        subFolder = 'Minor';
+                    end
+                    
+                    for j = 1:5
+                        %Select Caged Shape
+                        cagedShape = testCase.shapeVec(j);
+                        testCase.choose(testCase.App.GuitarChords_CAGEDLB,cagedShape);
+                        shapeToVer = strcat(cagedShape, '.png');
+                        
+                        %Test Verifications:
+                        testCase.verifyEqual(convertCharsToStrings(testCase.App.GuitarChordRealizer.shapePNG),shapeToVer);
+                        testCase.verifyEqual(convertCharsToStrings(testCase.App.GuitarChordRealizer.tonality),convertCharsToStrings(subFolder));
+                        %   XLocations
+                    end
+                end
+            end
+        end
+        %% Song Database Tests
+        function TestAddSong(testCase)
+            testCase.App.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Shallow');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Lady Gaga');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
+            
+            testCase.App.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Shallow');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Lady Gaga');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'We Will Rock You');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Queen');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
+            
+            testCase.App.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'Shallow');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Lady Gaga');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{3,1},'We Will Rock You');
+            testCase.verifyEqual(testCase.App.UITable.Data{3,2},'Queen');
+            testCase.verifyEqual(testCase.App.UITable.Data{3,3},'URL');
+        end
+        
+        function TestDeleteSong(testCase)
+            testCase.App.addSongToDatabase('Shallow', 'Lady Gaga', 'URL');
+            testCase.App.addSongToDatabase('We Will Rock You', 'Queen', 'URL');
+            testCase.App.addSongToDatabase('Baby', 'Justin Bieber', 'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'Shallow');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Lady Gaga');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{3,1},'We Will Rock You');
+            testCase.verifyEqual(testCase.App.UITable.Data{3,2},'Queen');
+            testCase.verifyEqual(testCase.App.UITable.Data{3,3},'URL');
+            
+            testCase.App.deleteSongInDatabase('Shallow');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,1},'Baby');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,2},'Justin Bieber');
+            testCase.verifyEqual(testCase.App.UITable.Data{1,3},'URL');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,1},'We Will Rock You');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,2},'Queen');
+            testCase.verifyEqual(testCase.App.UITable.Data{2,3},'URL');
+        end
+        
+    end
+end
