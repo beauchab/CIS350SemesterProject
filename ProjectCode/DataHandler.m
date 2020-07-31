@@ -18,11 +18,15 @@ classdef DataHandler < handle
             obj.fid = fopen(obj.filename,'r');
         end
         
+        function openForAppending(obj)
+            obj.fid = fopen(obj.filename,'a');
+        end
+        
         function addData(obj,name, value, valType)
             fprintf(obj.fid,['%s ', valType, '\n'], name, value);           
         end
         
-        function data = getData(obj, name,valType)
+        function data = getData(obj)
             data = strings(15,1); % Hardcoded since we know how many inputs there are
             for ii=1:15
                 data(ii) = fgetl(obj.fid);

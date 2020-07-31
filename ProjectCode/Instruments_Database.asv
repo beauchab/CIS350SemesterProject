@@ -1,21 +1,23 @@
-classdef Songs_Database < handle
+classdef Instruments_Database < handle
     
     properties
         interface
-        databaseFile = "SongDatabase.txt";
+        databaseFile = "InstrumentDatabase.txt";
+        databaseTable
     end
     
     methods
-        function obj = Songs_Database(intface)
+        function obj = Instruments_Database(intface, dbTable)
             obj.interface = intface;
+            obj.databaseTable = dbTable;
         end
         
         function updateTable(obj)
-            data = obj.getAllSongData;
-            obj.interface.UITable.Data = data;
+            data = obj.getAllData;
+            obj.databaseTable = data;
         end
         
-        function addSongToDatabase(obj, name, artist, url)
+        function addToDatabase(obj, varargin)
             if ~isfile(obj.databaseFile)
                 file = obj.createSongDatabase(obj.databaseFile);
             else
@@ -23,32 +25,32 @@ classdef Songs_Database < handle
                 file.openForAppending;
             end
             
-            fprintf(file.fid,"%s, %s, %s\n", name, artist, url);
+            fprintf(file.fid,"%s, %d\n", varargin{1}, varargin{2});
             
             obj.updateTable;
-            obj.sortSongDatabase; % Resort the entries
+            obj.sortDatabase; % Resort the entries
             file.closeFile;
         end
     
-        function deleteSongInDatabase(obj, name)
-            answer = questdlg('Are you sure you want to delete all songs with this name?', 'Delete Song', ...
+        function deleteFromDatabase(obj, name)
+            answer = questdlg('Are you sure you want to delete all instruments with this name?', 'Delete Instrument', ...
                 'Yes','No','No');
             switch answer % Handle response
                 case 'Yes'
                     alldata = string(obj.getAllSongData());
-                    songdata = string(obj.getSongRows(name));
+                    rowdata = string(obj.getSongRows(name));
                     
-                    alldata(ismember(alldata,songdata, 'rows'),:) = [];
+                    alldata(ismember(alldata,rowdata, 'rows'),:) = [];
                     
-                    file = obj.openSongDatabase(obj.databaseFile);
+                    file = obj.openDatabase(obj.databaseFile);
                     file.openForWriting;
                     
                     for ii=1:numel(alldata(:,1))
-                        obj.addSongToDatabase(alldata{ii,1},alldata{ii,2},alldata{ii,3});
+                        obj.addToDatabase(alldata{ii,1},alldata{ii,2});
                     end
                     
                     obj.updateTable;
-                    obj.sortSongDatabase; % Resort the entries
+                    obj.sortDatabase; % Resort the entries
                     
                     file.closeFile;
                 case 'No'
@@ -56,14 +58,14 @@ classdef Songs_Database < handle
             end
         end
     
-        function sortSongDatabase(obj)
-            data = obj.interface.UITable.Data;    % Get current data from table
+        function sortDatabase(obj)
+            data = obj.databaseTable.Data;    % Get current data from table
             sortedData = sortrows(data, 1); % Sort the data by the first column
-            obj.interface.UITable.Data = sortedData; % Add the data back to the table
+            obj.databaseTable.Data = sortedData; % Add the data back to the table
         end
     
         function searchDatabase(obj, name)
-            data = obj.getSongRows(name);
+            data = obj.getRows(name);
             
             [r, c] = size(data);
             formattedData = strings(r,1);
@@ -82,7 +84,7 @@ classdef Songs_Database < handle
             end           
         end
         
-        function songRows = getSongRows(obj, name)
+        function rows = getSongRows(obj, name)
             tableData = obj.interface.UITable.Data; % Get current data from table
             logArr = contains(tableData, name);
             songRows = tableData(logArr(:,1),:);
@@ -102,13 +104,14 @@ classdef Songs_Database < handle
     end
     
     methods (Static)
-        function exl = createSongDatabase(filename)
+        function exl = createDatabase(filename)
             exl = DataHandler(filename);
             exl.openForWriting;
         end
         
-        function exl = openSongDatabase(filename)
+        function exl = openDatabase(filename)
             exl = DataHandler(filename);
         end
     end
 end
+      

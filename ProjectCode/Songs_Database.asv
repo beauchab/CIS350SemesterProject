@@ -2,6 +2,7 @@ classdef Songs_Database < handle
     
     properties
         interface
+        databaseFile = "SongDatabase.txt";
     end
     
     methods
@@ -9,23 +10,46 @@ classdef Songs_Database < handle
             obj.interface = intface;
         end
         
+        function updateTable(obj)
+            data = obj.getAllSongData(obj.databaseFile);
+            obj.interface.UITable.Data = data;
+            file.closeFile;
+        end
+        
         function addSongToDatabase(obj, name, artist, url)
-            curData = obj.interface.UITable.Data; % Get current data from table
-            newData = [curData; [{name}, {artist}, {url}]]; % append row to the bottom
-            obj.interface.UITable.Data = newData; % Add the data back to the table
-            obj.sortSongDatabase; % Resort the entries
+            if ~isfile(obj.databaseFile)
+                file = obj.createSongDatabase(obj.databaseFile);
+            else
+                file = obj.openSongDatabase(obj.databaseFile);
+                file.openForAppending;
+            end
             
-            %ADD REPORT HERE
+            fprintf(file.fid,"%s, %s, %s\n", name, artist, url);
+            
+            obj.updateTable();
         end
     
         function deleteSongInDatabase(obj, name)
-            answer = questdlg('Are you sure you want to delete this song?', 'Delete Song', ...
+            answer = questdlg('Are you sure you want to delete all songs with this name?', 'Delete Song', ...
                 'Yes','No','No');
             switch answer % Handle response
                 case 'Yes'
-                    disp([answer 'Song deleted'])
-                    obj.interface.UITable.Data(ismember(obj.interface.UITable.Data(:,1),name),:) = []; % Search table for name and clear that row
+                    alldata = obj.getAllSongData;
+                    songdata = obj.getSongRows(name);
+                    
+                    alldata(contains(alldata,songdata, 'rows')) = [];
+                    
+                    file = obj.openSongDatabase(obj.databaseFile);
+                    file.openForWriting;
+                    
+                    for ii=0:numel(alldata(:,1))
+                        obj.addSongToDatabase(alldata{ii,1},alldata{ii,2},alldata{ii,1}
+                    end
+                    
+                    obj.updateTable;
                     obj.sortSongDatabase; % Resort the entries
+                    
+                    file.closeFile;
                 case 'No'
                     disp([answer 'Song not deleted'])
             end
@@ -38,39 +62,51 @@ classdef Songs_Database < handle
         end
     
         function searchDatabase(obj, name)
-            tableData = obj.interface.UITable.Data; % Get current data from table
-            
-            data = tableData(contains(tableData, name),:);
+            data = obj.getSongRows(name);
             
             [r, c] = size(data);
             formattedData = strings(r,1);
             for ii=1:r
                 str = "";
                 for jj=1:c
-                    str = strcat(str, data{ii,jj}, " ");
+                    str = strcat(str, data{ii,jj}, ", ");
                 end
                 formattedData(ii) = {str};
             end
                      
             if ~isempty(formattedData)
-                uiconfirm(obj.interface.timbrApp, string(data), 'Search Results', 'Icon', 'success');
+                uiconfirm(obj.interface.timbrApp, formattedData, 'Search Results', 'Icon', 'success');
             else
-                uiconfirm(obj.interface.timbrApp, ['Term ', name, ' not found'], 'Search Results', 'Icon', 'failure');                
+                uiconfirm(obj.interface.timbrApp, ['Term ', name, ' not found'], 'Search Results', 'Icon', 'error');                
             end           
         end
         
+        function songRows = getSongRows(obj, name)
+            tableData = obj.interface.UITable.Data; % Get current data from table
+            logArr = contains(tableData, name);
+            songRows = tableData(logArr(:,1),:);
+        end
     end
     
     methods (Static)
-        function exl = createSongDatabase()
-            filename = "SongDatabase.txt";
+        function exl = createSongDatabase(filename)
             exl = DataHandler(filename);
             exl.openForWriting;
         end
         
         function exl = openSongDatabase(filename)
             exl = DataHandler(filename);
-            exl.openForReading;
+        end
+        
+        function data = getAllSongData(filename)
+            file = obj.openSongDatabase(filename);
+            file.openForReading;
+            data = [];
+            line = fgetl(file.fid);
+            while (line ~= -1)
+                data = [data; strsplit(line,',')];
+                line = fgetl(file.fid);
+            end
         end
     end
 end

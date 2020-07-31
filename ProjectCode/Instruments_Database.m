@@ -2,72 +2,116 @@ classdef Instruments_Database < handle
     
     properties
         interface
+        databaseFile = "InstrumentDatabase.txt";
+        databaseTable
     end
     
     methods
-        function obj = Instruments_Database(intface)
+        function obj = Instruments_Database(intface, dbTable)
             obj.interface = intface;
+            obj.databaseTable = dbTable;
         end
         
-        function addToDatabase(obj, instrument)
-            curData = obj.interface.UITable2.Data; % Get current data from table
-            newData = [curData; [{instrument}, {0}]]; % append row to the bottom
-            obj.interface.UITable2.Data = newData; % Add the data back to the table
+        function updateTable(obj)
+            data = obj.getAllData;
+            obj.databaseTable = data;
+        end
+        
+        function addToDatabase(obj, varargin)
+            if ~isfile(obj.databaseFile)
+                file = obj.createSongDatabase(obj.databaseFile);
+            else
+                file = obj.openSongDatabase(obj.databaseFile);
+                file.openForAppending;
+            end
             
-            %ADD REPORT HERE
+            fprintf(file.fid,"%s, %d\n", varargin{1}, varargin{2});
+            
+            obj.updateTable;
+            obj.sortDatabase; % Resort the entries
+            file.closeFile;
         end
     
-        function deleteInDatabase(obj, name)
-            answer = questdlg('Are you sure you want to delete this song?', 'Delete Song', ...
+        function deleteFromDatabase(obj, name)
+            answer = questdlg('Are you sure you want to delete all instruments with this name?', 'Delete Instrument', ...
                 'Yes','No','No');
             switch answer % Handle response
                 case 'Yes'
-                    disp([answer 'Song deleted'])
-                    obj.interface.UITable.Data(ismember(obj.interface.UITable.Data(:,1),name),:) = []; % Search table for name and clear that row
-                    obj.interface.sortSongDatabase; % Resort the entries
+                    alldata = string(obj.getAllSongData());
+                    rowdata = string(obj.getSongRows(name));
+                    
+                    alldata(ismember(alldata,rowdata, 'rows'),:) = [];
+                    
+                    file = obj.openDatabase(obj.databaseFile);
+                    file.openForWriting;
+                    
+                    for ii=1:numel(alldata(:,1))
+                        obj.addToDatabase(alldata{ii,1},alldata{ii,2});
+                    end
+                    
+                    obj.updateTable;
+                    obj.sortDatabase; % Resort the entries
+                    
+                    file.closeFile;
                 case 'No'
                     disp([answer 'Song not deleted'])
             end
         end
     
         function sortDatabase(obj)
-            data = obj.interface.UITable.Data;    % Get current data from table
+            data = obj.databaseTable.Data;    % Get current data from table
             sortedData = sortrows(data, 1); % Sort the data by the first column
-            obj.interface.UITable.Data = sortedData; % Add the data back to the table
+            obj.databaseTable.Data = sortedData; % Add the data back to the table
         end
     
         function searchDatabase(obj, name)
-            tableData = obj.interface.UITable.Data; % Get current data from table
+            data = obj.getRows(name);
             
-            %data = tableData(contains(tableData, name),:);
-            
-            data = [{'a'},{'b'},{'c'};...
-                    {'d'},{'e'},{'f'}];
             [r, c] = size(data);
             formattedData = strings(r,1);
             for ii=1:r
                 str = "";
                 for jj=1:c
-                    str = strcat(str, data{ii,jj}, " ");
+                    str = strcat(str, data{ii,jj}, ", ");
                 end
                 formattedData(ii) = {str};
             end
-                        
-            uiconfirm(obj.interface.timbr, string(data), 'Search Results', 'Icon', 'success');            
+                     
+            if ~isempty(formattedData)
+                uiconfirm(obj.interface.timbrApp, formattedData, 'Search Results', 'Icon', 'success');
+            else
+                uiconfirm(obj.interface.timbrApp, ['Term ', name, ' not found'], 'Search Results', 'Icon', 'error');                
+            end           
         end
         
+        function rows = getRows(obj, name)
+            tableData = obj.interface.UITable.Data; % Get current data from table
+            logArr = contains(tableData, name);
+            rows = tableData(logArr(:,1),:);
+        end
+        
+        function data = getAllData(obj)
+            file = obj.openDatabase(obj.databaseFile);
+            file.openForReading;
+            data = [];
+            line = fgetl(file.fid);
+            while (line ~= -1)
+                data = [data; strsplit(line,',')];
+                line = fgetl(file.fid);
+            end
+            file.closeFile;
+        end    
     end
     
     methods (Static)
-        function exl = createSongDatabase()
-            filename = "SongDatabase.txt";
+        function exl = createDatabase(filename)
             exl = DataHandler(filename);
             exl.openForWriting;
         end
         
-        function exl = openSongDatabase(filename)
+        function exl = openDatabase(filename)
             exl = DataHandler(filename);
-            exl.openForReading;
         end
     end
 end
+      
