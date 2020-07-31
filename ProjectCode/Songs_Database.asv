@@ -40,23 +40,22 @@ classdef Songs_Database < handle
         function searchDatabase(obj, name)
             tableData = obj.interface.UITable.Data; % Get current data from table
             
-            logArr = contains(tableData, name);
-            data = tableData(logArr(:,1),:);
+            data = tableData(contains(tableData, name),:);
             
             [r, c] = size(data);
             formattedData = strings(r,1);
             for ii=1:r
                 str = "";
                 for jj=1:c
-                    str = strcat(str, data{ii,jj}, ", ");
+                    str = strcat(str, data{ii,jj}, " ");
                 end
                 formattedData(ii) = {str};
             end
                      
             if ~isempty(formattedData)
-                uiconfirm(obj.interface.timbrApp, formattedData, 'Search Results', 'Icon', 'success');
+                uiconfirm(obj.interface.timbrApp, string(data), 'Search Results', 'Icon', 'success');
             else
-                uiconfirm(obj.interface.timbrApp, ['Term ', name, ' not found'], 'Search Results', 'Icon', 'error');                
+                uiconfirm(obj.interface.timbrApp, ['Term ', name, ' not found'], 'Search Results', 'Icon', 'failure');                
             end           
         end
         
