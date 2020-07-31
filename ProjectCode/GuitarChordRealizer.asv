@@ -5,39 +5,38 @@ Description: This is a file which defines the Guitar Chord Realizer object.
 @updated - 7/29/2020
 %}
 classdef GuitarChordRealizer < handle
-    
+   
     properties (Access = public)
-        interface     %This is the app
-        tonality      %This is the tone of the chord
-        shapePNG      %This is the name of the image
-        xLoc          %This is the fret at which the image will be displayed
-        chordShapePNG %This is the handle for the chord shape image
-        co5PNG        %This is the handle for the circle of fifths image
-        fig           %This is the guitar chord figure
-        rootFolder = 'W:\CIS350SemesterProject'
-        %This is the array which allows for transition between keys
-        circleOfFifthsArr = [
-            "I",	"ii",	"iii",	"IV",	"V",	"vi",	"vii";%header
-            "A",	"Bm",	"Dbm",	"D",	"E",	"Gbm",	"Ab*";
-            "Bb",	"Cm",	"Dm",	"Eb",	"F",	"Gm",	"A*";
-            "B",	"Dbm",	"Ebm",	"E",	"Gb",	"Abm",	"Bb*";
-            "C",	"Dm",	"Em",	"F",	"G",	"Am",	"B*";
-            "Db",	"Ebm",	"Fm",	"Gb",	"Ab",	"Bbm",	"C*";
-            "D",	"Em",	"Gbm",	"G",	"A",	"Bm",	"Db*";
-            "Eb",	"Fm",	"Gm",	"Ab",	"Bb",	"Cm",	"D*";
-            "E",	"Gbm",	"Abm",	"A",	"B",	"Dbm",	"Eb*";
-            "F",	"Gm",	"Am",	"Bb",	"C",	"Dm",	"E*";
-            "Gb",	"Abm",	"Bbm",	"B",	"Db",	"Ebm",	"F*";
-            "G",	"Am",	"Bm",	"C",	"D",	"Em",	"Gb*";
-            "Ab",	"Bbm",	"Cm",	"Db",	"Eb",	"Fm",	"G*"
-            ];
-        %Placement Matrices
-        %This is a placement array for major and minor chords
-        chordMajMinPlacementArr = [
-            %C        %A      %G      %E      %D
+       interface     %This is the app
+       tonality      %This is the tone of the chord
+       shapePNG      %This is the name of the image
+       xLoc          %This is the fret at which the image will be displayed
+       chordShapePNG %This is the handle for the chord shape image
+       co5PNG        %This is the handle for the circle of fifths image
+       fig           %This is the guitar chord figure
+       %This is the array which allows for transition between keys
+       circleOfFifthsArr = [
+                "I",	"ii",	"iii",	"IV",	"V",	"vi",	"vii";%header
+                "A",	"Bm",	"Dbm",	"D",	"E",	"Gbm",	"Ab*";
+                "Bb",	"Cm",	"Dm",	"Eb",	"F",	"Gm",	"A*";
+                "B",	"Dbm",	"Ebm",	"E",	"Gb",	"Abm",	"Bb*";
+                "C",	"Dm",	"Em",	"F",	"G",	"Am",	"B*";
+                "Db",	"Ebm",	"Fm",	"Gb",	"Ab",	"Bbm",	"C*";
+                "D",	"Em",	"Gbm",	"G",	"A",	"Bm",	"Db*";
+                "Eb",	"Fm",	"Gm",	"Ab",	"Bb",	"Cm",	"D*";
+                "E",	"Gbm",	"Abm",	"A",	"B",	"Dbm",	"Eb*";
+                "F",	"Gm",	"Am",	"Bb",	"C",	"Dm",	"E*";
+                "Gb",	"Abm",	"Bbm",	"B",	"Db",	"Ebm",	"F*";
+                "G",	"Am",	"Bm",	"C",	"D",	"Em",	"Gb*";
+                "Ab",	"Bbm",	"Cm",	"Db",	"Eb",	"Fm",	"G*"
+       ];
+       %Placement Matrices
+       %This is a placement array for major and minor chords
+       chordMajMinPlacementArr = [
+           %C        %A      %G      %E      %D
             9,        0,	  2,	  5,	  7;%A
-            10,        1,	  3,	  6,	  8;%Bb
-            11,        2,	  4,	  7,	  9;%B
+           10,        1,	  3,	  6,	  8;%Bb
+           11,        2,	  4,	  7,	  9;%B
             0,        3,	  5,	  8,	 10;%C
             1,        4,	  6,	  9,	 11;%Db
             2,        5,	  7,	 10,	  0;%D
@@ -47,10 +46,10 @@ classdef GuitarChordRealizer < handle
             6,        9,	 11,	  2,	  4;%Gb
             7,       10,	  0,	  3,	  5;%G
             8,       11,	  1,	  4,	  6;%Ab
-            ];
-        %This is a placement array for diminished chords
-        chordDiminPlacementArr = [
-            %6        %5      %4
+       ];
+       %This is a placement array for diminished chords
+       chordDiminPlacementArr = [
+           %6        %5      %4
             6,        0,	  8;   %A
             7,        1,	  9;   %Bb
             8,        2,	 10;   %B
@@ -64,7 +63,7 @@ classdef GuitarChordRealizer < handle
             3,       10,	  5;   %Gb
             4,       11,	  6;   %G
             5,       12,	  7;   %Ab
-            ];
+       ];
     end
     
     methods
@@ -84,7 +83,7 @@ classdef GuitarChordRealizer < handle
         end
         %{
         Name: updateCO5PNG
-        Description: This function updates the circle of fifths for the
+        Description: This function updates the circle of fifths for the 
                      guitar chords tab.
         @author - Brendan P. Beauchamp
         @updated - 7/29/2020
@@ -95,7 +94,7 @@ classdef GuitarChordRealizer < handle
         @return - void
         %}
         function updateCO5PNG(obj, key)
-            
+           
             switch(key)
                 case 'A'
                     cofPng = 'A.png';
@@ -143,9 +142,13 @@ classdef GuitarChordRealizer < handle
             obj.co5PNG = cofPng;
             
             %Update the Circle of 5ths that is displayed on Guitar Chords Tab
-            file = dir(fullfile(obj.rootFolder , ['**\CircleOf5ths\' cofPng]));
-            co5FP = fullfile(file.folder, file.name);
+            co5FP = fullfile(pwd,'ProjectCode','TIMBR_Dat','CircleOf5ths', cofPng);
+            disp(co5FP);
             
+            % Get .png files
+            file = dir(fullfile(pwd, ['**\CircleOf5ths\*' cofPng '*']));
+            co5FP = 
+            % 
             I3 = imshow(co5FP, 'Parent', obj.interface.GuitarChords_CO5Axes, ...
                 'XData', [1 obj.interface.GuitarChords_CO5Axes.Position(3)], ...
                 'YData', [1 obj.interface.GuitarChords_CO5Axes.Position(4)]);
@@ -167,13 +170,13 @@ classdef GuitarChordRealizer < handle
             shapesDimin = ["6", "5", "4"];
             %If chord is 7th, update the LB to diminished shapes
             if (contains(value, "vii"))
-                newItems = shapesDimin;
-                %Otherwise use CAGED shapes
+            newItems = shapesDimin;
+            %Otherwise use CAGED shapes
             else
                 newItems = shapesCAGED;
             end
             obj.interface.GuitarChords_CAGEDLB.Items = newItems;
-        end
+        end 
         %{
         Name: concatChords
         Description: This function concatenates available chords within
@@ -185,7 +188,7 @@ classdef GuitarChordRealizer < handle
         @param - value
                     This is the key which the user has selected
         %}
-        function concatChords(obj, value)
+        function concatChords(obj, value)            
             chords = obj.circleOfFifthsArr(ismember(obj.circleOfFifthsArr(:,1),value),:);
             for ii=numel(chords):-1:1
                 newItems(ii) = strcat(obj.circleOfFifthsArr(1,ii), " : ", chords(ii));
@@ -203,7 +206,7 @@ classdef GuitarChordRealizer < handle
                     This is the GuitarChordRealizer object
         %}
         function dispGuitarChord(obj)
-            %Function Variables
+            %Function Variables           
             cTyp = 'Bar';
             txt = " Open";
             
@@ -211,11 +214,11 @@ classdef GuitarChordRealizer < handle
             chordShape = obj.interface.GuitarChords_CAGEDLB.Value;
             
             %Parse for chord and cofnum
-            CDD = obj.interface.GuitarChords_ChordDD.Value;
-            %PARSE NUMERAL FROM CDD            -> Tonality
-            cofNum = extractBefore(CDD, ' : ');
-            %PARSE NOTE FROM CDD               -> Chord Letter
-            note = extractAfter(CDD,' : ');
+            CDD = obj.interface.GuitarChords_ChordDD.Value;             
+                %PARSE NUMERAL FROM CDD            -> Tonality
+                cofNum = extractBefore(CDD, ' : ');
+                %PARSE NOTE FROM CDD               -> Chord Letter
+                note = extractAfter(CDD,' : ');
             
             %Determine Tonality
             tone = obj.cofNumToTonality(cofNum);
@@ -238,19 +241,19 @@ classdef GuitarChordRealizer < handle
                 if (chordShape == note)
                     %Chord to be displayed is at the bottom of the neck
                     cTyp = 'Open';
-                end
+                end            
                 chordPng = strcat(cTyp,'_',chordShape,'.png');
             end
-            
+                     
             %Add values to app properties
             obj.tonality = tone;
             obj.shapePNG = chordPng;
-            obj.xLoc = imgXLoc;
-            
+            obj.xLoc = imgXLoc;             
+           
             %Compile File Path
-            file = dir(fullfile(obj.rootFolder , ['**\' obj.tonality '\' obj.shapePNG]));
-            crdFP = fullfile(file.folder, file.name);
-            
+            crdFP = fullfile(pwd, 'Project Code' ,'TIMBR_DAT','ChordShapes',...
+                obj.tonality, obj.shapePNG);    
+           
             %Create a figure to display a guitar chord
             f = figure();
             %Modify title based on bar chord
@@ -261,19 +264,17 @@ classdef GuitarChordRealizer < handle
             %Concatenate Figure Name
             figName = strcat(note, " ", obj.tonality, txt);
             set(f,'name', figName);
-            
-            %Display the guitar neck and resize image
-            file = dir(fullfile(obj.rootFolder , '**\guitarNeck2.png'));
-            neck = imread(fullfile(file.folder, file.name));
-            
+           	
+    	   %Display the guitar neck and resize image
+    	   neck = imread(fullfile(pwd, 'Project Code' ,'TIMBR_DAT','guitarNeck2.png'));
             %neck = imresize(neck, 0.90);
             [y,x,~] = size(neck);
             
             % generate axes
             ax = axes('Units','pixels', 'Position',[0 0 x y], 'XTick',[], 'YTick',[], ...
-                'Nextplot','add', 'YDir','reverse');
+             			'Nextplot','add', 'YDir','reverse');
             % Display the image in the axes
-            image(neck, 'parent', ax);
+       	    image(neck, 'parent', ax);
             
             %Determine the alpha data for the guitar chord
             [im, ~, alpha] = imread(crdFP);
@@ -290,7 +291,7 @@ classdef GuitarChordRealizer < handle
         %{
         Name: imgPlaceMath
         Description: This function uses the chord, tone, and
-                     open shape which is chosen to determine where to
+                     open shape which is chosen to determine where to 
                      place the chord on the fret board
         @author - Brendan P. Beauchamp
         @updated - 7/29/2020
@@ -305,7 +306,7 @@ classdef GuitarChordRealizer < handle
                     This is the tonality of the selected chord
         @return - imgXLoc
                     This is the x location on the fret board in order to
-                    play the selected chord with the selected open shape
+                    play the selected chord with the selected open shape 
                     and tone.
         %}
         function imgXLoc = imgPlaceMath(obj, chord, openShape, tone)
@@ -324,7 +325,7 @@ classdef GuitarChordRealizer < handle
     methods (Static)
         %{
         Name: chordToNum
-        Description: This funciton is used to determine which column of the
+        Description: This funciton is used to determine which column of the 
                      placement matrix is to be utilized
         @author - Brendan P. Beauchamp
         @updated - 7/29/2020
@@ -334,7 +335,7 @@ classdef GuitarChordRealizer < handle
                     This is the tonality of the selected code
         @return - cNum
                     This is the column of the placement matrix
-        %}
+        %}                    
         function cNum = chordToNum(chord, tone)
             if(strcmp(tone, 'Dimin'))
                 chord = extractBefore(chord, '*');
@@ -368,11 +369,11 @@ classdef GuitarChordRealizer < handle
                     cNum = 12;
                 otherwise
                     warning("Problem with fcn chordToNum");
-            end
+            end          
         end
         %{
         Name: openShapeToNum
-        Description: This function is used to determine which row of the
+        Description: This function is used to determine which row of the 
                      placement matrix is to be used
         @author - Brendan P. Beauchamp
         @updated - 7/29/2020
@@ -411,7 +412,7 @@ classdef GuitarChordRealizer < handle
                     otherwise
                         warning("Problem with fcn openShapeToNum");
                 end
-            end
+            end   
         end
         %{
         Name: cofNumToTonality

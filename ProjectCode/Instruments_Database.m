@@ -19,9 +19,9 @@ classdef Instruments_Database < handle
         
         function addToDatabase(obj, varargin)
             if ~isfile(obj.databaseFile)
-                file = obj.createSongDatabase(obj.databaseFile);
+                file = obj.createDatabase(obj.databaseFile);
             else
-                file = obj.openSongDatabase(obj.databaseFile);
+                file = obj.openDatabase(obj.databaseFile);
                 file.openForAppending;
             end
             
@@ -37,7 +37,7 @@ classdef Instruments_Database < handle
                 'Yes','No','No');
             switch answer % Handle response
                 case 'Yes'
-                    alldata = string(obj.getAllSongData());
+                    alldata = string(obj.getAllData());
                     rowdata = string(obj.getSongRows(name));
                     
                     alldata(ismember(alldata,rowdata, 'rows'),:) = [];
