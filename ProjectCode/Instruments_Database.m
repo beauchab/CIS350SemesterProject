@@ -60,7 +60,7 @@ classdef Instruments_Database < handle
     
         function sortDatabase(obj)
             data = obj.databaseTable.Data;    % Get current data from table
-            if ~isempty(data)
+            if numel(data(:,1))>1
                 sortedData = sortrows(data, 1); % Sort the data by the first column
                 obj.databaseTable.Data = sortedData; % Add the data back to the table
             end
