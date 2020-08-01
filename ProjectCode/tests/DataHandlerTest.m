@@ -6,7 +6,7 @@ classdef DataHandlerTest < matlab.unittest.TestCase
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            testCase.exl = DataHandler('test.xlsx');
+            testCase.exl = DataHandler('test.txt');
         end
     end
     

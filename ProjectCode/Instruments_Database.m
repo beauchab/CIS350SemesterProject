@@ -66,25 +66,26 @@ classdef Instruments_Database < handle
             end
         end
     
-        function searchDatabase(obj, name)
-            data = obj.getRows(name);
-            
-            [r, c] = size(data);
-            formattedData = strings(r,1);
-            for ii=1:r
-                str = "";
-                for jj=1:c
-                    str = strcat(str, data{ii,jj}, ", ");
-                end
-                formattedData(ii) = {str};
-            end
-                     
-            if ~isempty(formattedData)
-                uiconfirm(obj.interface.timbrApp, formattedData, 'Search Results', 'Icon', 'success');
-            else
-                uiconfirm(obj.interface.timbrApp, ['Term ', name, ' not found'], 'Search Results', 'Icon', 'error');                
-            end           
-        end
+%         function searchDatabase(obj, name)
+%             data = obj.getRows(name);
+%             
+%             [r, c] = size(data);
+%             formattedData = strings(r,1);
+%             for ii=1:r
+%                 str = "";
+%                 for jj=1:c
+%                     str = strcat(str, data{ii,jj}, ", ");
+%                 end
+%                 formattedData(ii) = {str};
+%             end
+%                      
+%             if ~isempty(formattedData)
+%                 obj.resultfound = 1;
+%                 waitfor(questdlg(formattedData, 'Search Results', 'OK', 'Cancel', 'OK'));
+%             else
+%                 questdlg(['Term ', name, ' not found'], 'Search Results', 'error');                
+%             end           
+%         end
         
         function rows = getRows(obj, name)
             tableData = obj.databaseTable.Data; % Get current data from table

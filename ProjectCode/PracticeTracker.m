@@ -44,10 +44,10 @@ classdef PracticeTracker < handle
             end
         end
         
-        function updateInstrumentHours(app, instrument,hours,mins)
-            curData = app.UITable2.Data{ismember(app.UITable2.Data,instrument),2};
-            app.UITable2.Data(ismember(app.UITable2.Data,instrument),2) = curData + hours + (mins/60);
-        end
+%         function updateInstrumentHours(app, instrument,hours,mins)
+%             curData = app.UITable2.Data{ismember(app.UITable2.Data,instrument),2};
+%             app.UITable2.Data(ismember(app.UITable2.Data,instrument),2) = curData + hours + (mins/60);
+%         end
         
         function submitSession(obj)
             instr = obj.interface.InstrumentDropDown.Value;

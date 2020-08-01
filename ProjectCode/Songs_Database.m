@@ -3,12 +3,14 @@ classdef Songs_Database < handle
     properties
         interface
         databaseFile = "SongDatabase.txt";
+        resultfound;
     end
     
     methods
         function obj = Songs_Database(intface)
             obj.interface = intface;
             obj.updateTable;
+            obj.resultfound = 0;
         end
         
         function updateTable(obj)
@@ -77,9 +79,10 @@ classdef Songs_Database < handle
             end
                      
             if ~isempty(formattedData)
-                uiconfirm(obj.interface.timbrApp, formattedData, 'Search Results', 'Icon', 'success');
+                obj.resultfound = 1;
+                waitfor(questdlg(formattedData, 'Search Results', 'OK', 'Cancel', 'OK'));
             else
-                uiconfirm(obj.interface.timbrApp, ['Term ', name, ' not found'], 'Search Results', 'Icon', 'error');                
+                questdlg(['Term ', name, ' not found'], 'Search Results', 'error');                
             end           
         end
         

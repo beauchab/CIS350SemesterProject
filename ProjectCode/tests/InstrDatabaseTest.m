@@ -1,0 +1,91 @@
+classdef InstrDatabaseTest < matlab.uitest.TestCase
+    % Song Database Unit Tests
+    properties
+        App
+    end
+    
+    methods (TestMethodSetup)
+        function launchApp(testCase)
+            cd  'W:\CIS350SemesterProject\ProjectCode';
+            testCase.App = timbr;
+            testCase.addTeardown(@delete,testCase.App);
+        end
+    end
+    
+    methods (Test)
+        function testObjCreation(testCase)
+            testCase.verifyEqual(class(testCase.database), 'Instruments_Database');
+        end
+        
+        %Unit Testing for Instrument Database
+       function TestAddInstrument(testCase)
+            delete (testCase.App.instrsDatabase.databaseFile);
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            
+            testCase.App.instrsDatabase.addToDatabase('Piano', 0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,1}),'Piano');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,2}),0);
+            
+            
+            testCase.App.instrsDatabase.addToDatabase('Drums', 0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Drums');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,1}),'Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,2}),0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{3,1}),'Piano');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{3,2}),0);
+        end
+        
+        function TestDeleteinstrs(testCase)
+            delete (testCase.App.instrsDatabase.databaseFile);
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.App.instrsDatabase.addToDatabase('Piano', 0);
+            testCase.App.instrsDatabase.addToDatabase('Drums', 0);
+            
+            testCase.App.instrsDatabase.deleteFromDatabase('Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Drums');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,1}),'Piano');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,2}),0);
+        end
+
+        
+        function TestDeleteinstrsWithNo(testCase)
+            delete (testCase.App.instrsDatabase.databaseFile);
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.App.instrsDatabase.addToDatabase('Piano', 0);
+            testCase.App.instrsDatabase.addToDatabase('Drums', 0);
+            
+            waitfor(questdlg('Press No on the next dialog'));
+            testCase.App.instrsDatabase.deleteFromDatabase('Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Drums');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),0);
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,1}),'Piano');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,2}),0);
+        end
+        
+        function TestSearchInstrumen(testCase)
+            delete(testCase.database.databaseFile);
+            testCase.database.addSongToDatabase('Shallow', 'Lady Gaga', 'LadyGagaMusic.com');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,1}),'Shallow');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,2}),'Lady Gaga');
+            testCase.verifyEqual(strtrim(testCase.App.UITable.Data{1,3}),'LadyGagaMusic.com'); 
+            
+            close all;  % close any previously generated figures.
+             % Button pushed function: SearchButton
+            prompt = {'Enter song name'};
+            dlgtitle = 'Search for a Song';
+            dims = [1 35];
+            definput = {'Shallow'};
+            answer = inputdlg(prompt,dlgtitle,dims,definput);
+            if(~ isempty(answer))
+                testCase.App.songDatabase.searchDatabase(answer{1});
+            end
+            testCase.verifyEqual(testCase.App.songDatabase.resultfound, 1);
+        end
+    end
+end

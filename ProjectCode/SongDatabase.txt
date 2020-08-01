@@ -1,2 +1,1 @@
-Shallow,     Lady Gaga,     bomb.com
-Old Devil Moon,     Josh Groban,     bomb.com
+Shallow, Lady Gaga, LadyGagaMusic.com

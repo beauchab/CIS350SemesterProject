@@ -38,12 +38,14 @@ classdef AppTest < matlab.uitest.TestCase
         %% App methods test
         function testIsValidDate(testCase)
             % Set invalid date
-            testCase.type(testCase.App.DateEditField, 'aaa');
+            testC
+            % Press button
         end
         
         function testIsValidTime(testCase)
-            % Set invalid date
-            testCase.type(testCase.App.TimeEditField, 'aaa');
+            % Set invalid time
+            
+            % press button
         end
         %% Guitar Chord Tests
         %THIS TEST SHOULD WORK
