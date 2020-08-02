@@ -1,4 +1,4 @@
-classdef PracticeTrackerTest < matlab.unittest.TestCase
+classdef PracticeTrackerTest < matlab.uitest.TestCase
     % Practice Tracker Unit Tests
     properties
         App
@@ -7,7 +7,7 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            cd  'W:\CIS350SemesterProject';
+            cd  'W:\CIS350SemesterProject\ProjectCode';
             testCase.App = timbr;
             testCase.tracker = PracticeTracker(testCase.App);
             testCase.addTeardown(@delete,testCase.App);
@@ -59,8 +59,6 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
             curfolder = pwd;
             file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
             testCase.verifyEqual(isfile(file),true);
-            
-            % verify data
         end
         
         function testRecallSession(testCase)
@@ -96,9 +94,7 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
             file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
             testCase.verifyEqual(isfile(file),true);
             
-            waitfor(questdlg(['Select file ' file]));
-            
-            testCase.press(testCase.App.RecallSessionButton);
+            testCase.App.practiceLog.getPracticeData(file)
             
             testCase.verifyEqual(testCase.App.PracticeNotesTextArea.Value, "This is a test note");
             testCase.verifyEqual(testCase.App.GoalTextArea.Value, "This is a test goal");
@@ -165,16 +161,6 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
                     end
                 end
             end
-        end
-        
-         function testSubmitSession(testCase)
-            instr = testCase.tracker.interface.InstrumentDropDown.Value;
-            date = testCase.tracker.interface.DateEditField.Value;
-            time = testCase.tracker.interface.TimeEditField.Value;
-            filename = strcat(instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
-
-            openPracticeReport
-            confirm it contains data
         end
     end
 end

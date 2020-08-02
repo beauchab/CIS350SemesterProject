@@ -33,6 +33,9 @@ classdef Instruments_Database < handle
             obj.updateTable;
             obj.sortDatabase; % Resort the entries
             file.closeFile;
+            
+            % Update practice tab
+            obj.interface.practiceLog.populateInstrumentsFromDataBase();
         end
     
         function deleteFromDatabase(obj, name)

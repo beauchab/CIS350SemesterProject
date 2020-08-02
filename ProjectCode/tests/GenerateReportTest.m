@@ -91,8 +91,7 @@ classdef GenerateReportTest < matlab.uitest.TestCase
         function testNoFileSelected(testCase)
             testCase.App.ReportFolderEditField.Value = '';
             testCase.press(testCase.App.CreateReportButton);
-            %matlab.uitest.unlock(testCase.App.UIFigure);
-            %testCase.verifyEqual(testCase.App.confirmHandle, 'uiconfirm');
+            testCase.verifyEqual(testCase.App.ReportFolderEditField.Value,'');
         end
         
         function testBrowse(testCase)

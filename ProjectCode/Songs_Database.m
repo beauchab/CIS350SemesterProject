@@ -31,6 +31,9 @@ classdef Songs_Database < handle
             obj.updateTable;
             obj.sortSongDatabase; % Resort the entries
             file.closeFile;
+            
+            % Update practice tab
+            obj.interface.practiceLog.populateSongsFromDataBase();
         end
     
         function deleteSongInDatabase(obj, name)

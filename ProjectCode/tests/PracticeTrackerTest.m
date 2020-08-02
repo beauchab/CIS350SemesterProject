@@ -1,4 +1,4 @@
-classdef PracticeTrackerTest < matlab.unittest.TestCase
+classdef PracticeTrackerTest < matlab.uitest.TestCase
     % Practice Tracker Unit Tests
     properties
         App
@@ -7,7 +7,7 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
     
     methods (TestMethodSetup)
         function launchApp(testCase)
-            cd  'W:\CIS350SemesterProject';
+            cd  'W:\CIS350SemesterProject\ProjectCode';
             testCase.App = timbr;
             testCase.tracker = PracticeTracker(testCase.App);
             testCase.addTeardown(@delete,testCase.App);
@@ -57,10 +57,8 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
             date = testCase.App.DateEditField.Value;
             time = testCase.App.TimeEditField.Value;
             curfolder = pwd;
-            file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
+            file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".txt");
             testCase.verifyEqual(isfile(file),true);
-            
-            % verify data
         end
         
         function testRecallSession(testCase)
@@ -93,24 +91,22 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
             date = testCase.App.DateEditField.Value;
             time = testCase.App.TimeEditField.Value;
             curfolder = pwd;
-            file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
+            file = strcat(curfolder, '\', instr, "_", erase(date,"/"), "_", erase(time,":"), ".txt");
             testCase.verifyEqual(isfile(file),true);
             
-            waitfor(questdlg(['Select file ' file]));
+            testCase.App.practiceLog.getPracticeData(file);
             
-            testCase.press(testCase.App.RecallSessionButton);
-            
-            testCase.verifyEqual(testCase.App.PracticeNotesTextArea.Value, "This is a test note");
-            testCase.verifyEqual(testCase.App.GoalTextArea.Value, "This is a test goal");
+            testCase.verifyEqual(testCase.App.PracticeNotesTextArea.Value, {'This is a test note'});
+            testCase.verifyEqual(testCase.App.GoalTextArea.Value, {'This is a test goal'});
             
             testCase.verifyEqual(testCase.App.SongDropDown.Value, testCase.App.SongDropDown.Items{1});
             testCase.verifyEqual(testCase.App.MinutesEditField.Value, 15);
-            testCase.verifyEqual(testCase.App.HoursEditField.Value, testCase.App.SongDropDown.Items{1});
+            testCase.verifyEqual(testCase.App.HoursEditField.Value, 1);
             
             
             testCase.verifyEqual(testCase.App.SongDropDown.Value, testCase.App.SongDropDown.Items{1});
             testCase.verifyEqual(testCase.App.MinutesEditField.Value, 15);
-            testCase.verifyEqual(testCase.App.HoursEditField.Value, testCase.App.SongDropDown.Items{1});
+            testCase.verifyEqual(testCase.App.HoursEditField.Value, 1);
             
             testCase.choose(testCase.App.SongDropDown_2, 1);
             testCase.type(testCase.App.MinutesEditField_2, 30);
@@ -165,16 +161,6 @@ classdef PracticeTrackerTest < matlab.unittest.TestCase
                     end
                 end
             end
-        end
-        
-         function testSubmitSession(testCase)
-            instr = testCase.tracker.interface.InstrumentDropDown.Value;
-            date = testCase.tracker.interface.DateEditField.Value;
-            time = testCase.tracker.interface.TimeEditField.Value;
-            filename = strcat(instr, "_", erase(date,"/"), "_", erase(time,":"), ".xlsx");
-
-            openPracticeReport
-            confirm it contains data
         end
     end
 end
