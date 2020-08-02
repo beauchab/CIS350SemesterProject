@@ -96,8 +96,12 @@ classdef Songs_Database < handle
         end
         
         function data = getAllSongData(obj)
-            file = obj.openSongDatabase(obj.databaseFile);
-            file.openForReading;
+            if ~isfile(obj.databaseFile)
+                file = obj.createSongDatabase(obj.databaseFile);
+            else
+                file = obj.openSongDatabase(obj.databaseFile);
+                file.openForReading;
+            end
             data = [];
             line = fgetl(file.fid);
             while (line ~= -1)
