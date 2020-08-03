@@ -64,8 +64,10 @@ classdef Songs_Database < handle
     
         function sortSongDatabase(obj)
             data = obj.interface.UITable.Data;    % Get current data from table
-            sortedData = sortrows(data, 1); % Sort the data by the first column
-            obj.interface.UITable.Data = sortedData; % Add the data back to the table
+            if ~isempty(data)&&(numel(data(:,1))>1)
+                sortedData = sortrows(data, 1); % Sort the data by the first column
+                obj.interface.UITable.Data = sortedData; % Add the data back to the table
+            end
         end
     
         function searchDatabase(obj, name)

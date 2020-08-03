@@ -38,7 +38,7 @@ classdef PracticeTracker < handle
         function populateInstrumentsFromDataBase(obj)
             data = obj.interface.UITable2.Data;
             if isempty(data)
-                obj.interface.InstrumentDropDown.Items = {'N/A'};
+                obj.interface.InstrumentDropDown.Items = {'NA'};
             else
                 obj.interface.InstrumentDropDown.Items = data(:,1);
             end

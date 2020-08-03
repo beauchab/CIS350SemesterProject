@@ -1,0 +1,15 @@
+PracticeNotes Played Piano Good!
+Date 08/02/2020
+Time 6:32
+Goal Play Piano
+Instrument Piano
+AMPM AM
+Song1 Believer
+Song2 Old Devil Moon
+Song3 Shallow
+SongHrs1  1
+SongMins1 0
+SongMins2  30
+SongHrs2 0
+SongMins3 15
+SongHrs3 0

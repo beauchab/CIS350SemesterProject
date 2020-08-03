@@ -1,8 +1,8 @@
 PracticeNotes This is a test note
 Date 08/02/2020
-Time 1:27
+Time 6:46
 Goal This is a test goal
-Instrument Piano
+Instrument Guitar
 AMPM AM
 Song1 Shallow
 Song2 Shallow

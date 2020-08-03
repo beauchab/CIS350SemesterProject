@@ -28,7 +28,7 @@ classdef Instruments_Database < handle
                 file.openForAppending;
             end
             
-            fprintf(file.fid,"%s, %d\n", varargin{1}, varargin{2});
+            fprintf(file.fid,"%s, %s\n", varargin{1}, varargin{2});
             
             obj.updateTable;
             obj.sortDatabase; % Resort the entries
@@ -63,7 +63,7 @@ classdef Instruments_Database < handle
     
         function sortDatabase(obj)
             data = obj.databaseTable.Data;    % Get current data from table
-            if numel(data(:,1))>1
+            if ~isempty(data)&&(numel(data(:,1))>1)
                 sortedData = sortrows(data, 1); % Sort the data by the first column
                 obj.databaseTable.Data = sortedData; % Add the data back to the table
             end
@@ -97,12 +97,17 @@ classdef Instruments_Database < handle
         end
         
         function data = getAllData(obj)
-            file = obj.openDatabase(obj.databaseFile);
-            file.openForReading;
+            if ~isfile(obj.databaseFile)
+                file = obj.createDatabase(obj.databaseFile);
+            else
+                file = obj.openDatabase(obj.databaseFile);
+                file.openForReading;
+            end
             data = [];
             line = fgetl(file.fid);
             while (line ~= -1)
-                data = [data; strsplit(line,',')];
+                lineArr = strsplit(line,', ');
+                data = [data; lineArr(:,1:2)];
                 line = fgetl(file.fid);
             end
             file.closeFile;

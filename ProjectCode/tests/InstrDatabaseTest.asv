@@ -22,18 +22,18 @@ classdef InstrDatabaseTest < matlab.uitest.TestCase
         %Unit Testing for Instrument Database
        function TestAddInstrument(testCase)
             delete (testCase.App.instrsDatabase.databaseFile);
-            testCase.App.instrsDatabase.addToDatabase('Guitar', '0');
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Guitar');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),'0');
             
-            testCase.App.instrsDatabase.addToDatabase('Piano', '0');
+            testCase.App.instrsDatabase.addToDatabase('Piano', 0);
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Guitar');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),'0');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,1}),'Piano');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,2}),'0');
             
             
-            testCase.App.instrsDatabase.addToDatabase('Drums', '0');
+            testCase.App.instrsDatabase.addToDatabase('Drums', 0);
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Drums');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),'0');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,1}),'Guitar');
@@ -44,9 +44,9 @@ classdef InstrDatabaseTest < matlab.uitest.TestCase
         
         function TestDeleteinstrs(testCase)
             delete (testCase.App.instrsDatabase.databaseFile);
-            testCase.App.instrsDatabase.addToDatabase('Guitar', '0');
-            testCase.App.instrsDatabase.addToDatabase('Piano', '0');
-            testCase.App.instrsDatabase.addToDatabase('Drums', '0');
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.App.instrsDatabase.addToDatabase('Piano', 0);
+            testCase.App.instrsDatabase.addToDatabase('Drums', 0);
             
             testCase.App.instrsDatabase.deleteFromDatabase('Guitar');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Drums');
@@ -58,17 +58,16 @@ classdef InstrDatabaseTest < matlab.uitest.TestCase
         
         function TestDeleteinstrsWithNo(testCase)
             delete (testCase.App.instrsDatabase.databaseFile);
-            testCase.App.instrsDatabase.addToDatabase('Guitar', '0');
-            testCase.App.instrsDatabase.addToDatabase('Piano', '0');
-            testCase.App.instrsDatabase.addToDatabase('Drums', '0');
+            testCase.App.instrsDatabase.addToDatabase('Guitar', 0);
+            testCase.App.instrsDatabase.addToDatabase('Piano', 0);
+            testCase.App.instrsDatabase.addToDatabase('Drums', 0);
             
             waitfor(questdlg('Press No on the next dialog'));
+            testCase.App.instrsDatabase.deleteFromDatabase('Guitar');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,1}),'Drums');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{1,2}),'0');
-            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,1}),'Guitar');
+            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,1}),'Piano');
             testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{2,2}),'0');
-            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{3,1}),'Piano');
-            testCase.verifyEqual(strtrim(testCase.App.UITable2.Data{3,2}),'0');
         end
         
 %         function TestSearchInstrumen(testCase)
